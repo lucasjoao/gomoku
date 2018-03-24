@@ -6,7 +6,8 @@ public class GomokuPanel extends JPanel {
 	private final double PIECE_FRAC = 0.9;
 
 	private int size = 15;
-	private GomokuState state;
+	// FIXME add import
+	// private GomokuState state;
 
 	public GomokuPanel() {
 		this(15);
@@ -15,7 +16,9 @@ public class GomokuPanel extends JPanel {
 	public GomokuPanel(int size) {
 		super();
 		this.size = size;
-		state = new GomokuState(size);
-		addMouseListener(new GomokuListener());
+		// FIXME add construtor
+		// state = new GomokuState(size);
+		// FIXME add import
+		// addMouseListener(new GomokuListener());
 	}
 }
