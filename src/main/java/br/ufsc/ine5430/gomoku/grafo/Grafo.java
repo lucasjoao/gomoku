@@ -1,138 +1,203 @@
 package br.ufsc.ine5430.gomoku.grafo;
+
+
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Grafo {
 
-	// protected List<Vertice> vertices = new ArrayList<>();
-	private Map<String, Vertice> vertices = new HashMap<String, Vertice>();
+	private Map<Object, Vertice> vertices = new HashMap<Object, Vertice>();
 
 	public Grafo() {
 	}
 
-	public void adicionaVertice(Vertice vertice) {
+	public void criarVertice(Object chaveVertice) throws Exception {
 
-		boolean auxiliar = false;
+		if (chaveVertice == null) {
+			throw new Exception("o valor chaveVertice está nulo");
+		}
 
-		if (vertices.size() == 0) {
-			this.vertices.put(vertice.getNome(), vertice);
-			System.out.println("Vértice " + vertice.getNome() + " adicionado com sucesso!");
+		if (vertices.containsKey(chaveVertice)) {
+			throw new Exception("já existe um vértice com essa chave");
+		}
+
+		Vertice vertice = new Vertice(chaveVertice);
+		this.vertices.put(vertice.getChave(), vertice);
+	}
+
+	public void removeVertice(Object chaveVertice) throws Exception {
+
+		if (chaveVertice == null) {
+			throw new Exception("o valor chaveVertice está nulo");
+		}
+
+		if (!vertices.containsKey(chaveVertice)) {
+			throw new Exception("o grafo não contém esse vértice");
+		}
+
+		Vertice verticeRemover = vertices.get(chaveVertice);
+		verticeRemover.removerAdjacentes();
+		this.vertices.remove(chaveVertice);
+	}
+
+	public void conectar(Object chaveVertice1, Object chaveVertice2) throws Exception {
+		Vertice vertice1 = vertices.get(chaveVertice1);
+		Vertice vertice2 = vertices.get(chaveVertice2);
+
+		if (vertice1 == null) {
+			throw new Exception("o vértice " + chaveVertice1 + " não existe.");
+		}
+
+		if (vertice2 == null) {
+			throw new Exception("o vértice " + chaveVertice2 + " não existe.");
+		}
+
+		vertice1.adicionaAdjacente(vertice2);
+		vertice2.adicionaAdjacente(vertice1);
+	}
+
+	public void desconectar(Object chaveVertice1, Object chaveVertice2) throws Exception {
+
+		Vertice vertice1 = vertices.get(chaveVertice1);
+		Vertice vertice2 = vertices.get(chaveVertice2);
+
+		if (vertice1 == null) {
+			throw new Exception("o vértice " + chaveVertice1 + " não existe.");
+		}
+
+		if (vertice2 == null) {
+			throw new Exception("o vértice " + chaveVertice2 + " não existe.");
+		}
+
+		vertice1.removerAdjacente(vertice2);
+		vertice2.removerAdjacente(vertice1);
+
+	}
+
+	public int ordem() {
+		return this.vertices.size();
+	}
+
+	public Collection<Vertice> getVertices() {
+		return vertices.values();
+	}
+
+	public Vertice umVertice() throws Exception {
+		if (vertices.isEmpty()) {
+			throw new Exception("Não há nenhum vértice no grafo!");
+
 		} else {
-
-			for (String nomeVertice : vertices.keySet()) {
-				if (vertice.getNome().equals(nomeVertice)) {
-					auxiliar = true;
-				}
-			}
-
-			if (auxiliar) {
-				System.out.println("Não foi possível adicionar, este vértice já existe!");
-			} else {
-
-				this.vertices.put(vertice.getNome(), vertice);
-				System.out.println("Vértice " + vertice.getNome() + " adicionado com sucesso2!");
-			}
-
+			return vertices.values().iterator().next();
 		}
-
 	}
 
-	public void removeVertice(String nome) {
+	public Set<Vertice> adjacentes(Object chaveVertice) throws Exception {
 
-		Vertice removido = vertices.get(nome);
-
-		removido.adjacentes.remove(vertices);
-
-		this.vertices.remove(nome);
-		System.out.println("Vértice removido com sucesso!");
-
-		// TODO PRECISA REMOVER LIGAÇÕES DOS VERTICES REMOVIDOS TB
-
-	}
-
-	public void conecta(String v1, String v2) {
-		Vertice vertice1 = vertices.get(v1);
-		Vertice vertice2 = vertices.get(v2);
-
-		if (vertice1.adjacentes.contains(vertice2)) {
-			System.out.println("Os dois vértices já estão conectados!");
+		Vertice vertice = vertices.get(chaveVertice);
+		if (vertice != null) {
+			return vertice.getAdjacentes();
 		} else {
-			vertice1.adjacentes.add(vertice2);
-			vertice2.adjacentes.add(vertice1);
-			System.out.println("Os vértices " + vertice1.getNome() + " e " + vertice2.getNome() + " foram conectados!");
+			throw new Exception("o vértice não existe.");
 		}
+
 	}
 
-	public void desconecta(Vertice v1, Vertice v2) {
-
-		if (v1.adjacentes.contains(v2)) {
-			v1.adjacentes.remove(v2);
-			v2.adjacentes.remove(v1);
-			System.out.println("Os vértices " + v1.getNome() + " e " + v2.getNome() + "foram desconectados!");
+	public int grau(Object chaveVertice) throws Exception {
+		Vertice vertice = vertices.get(chaveVertice);
+		if (vertice != null) {
+			return vertice.obterGrau();
 		} else {
-			System.out.println("Não foi possível, pois os vértices não são ligados");
+			throw new Exception("Este vértice não existe!");
 		}
-
-		// TODO PRECISA VERIFICAR SE HÁ ESSA LIGAÇÃO
-
-	}
-
-	public void ordem() {
-		System.out.println("A ordem do grafo é: " + this.vertices.size());
-	}
-
-	public void mostrarVertices() {
-
-		String saida = "";
-
-		if (vertices.size() > 0) {
-
-			for (String nomeVertice : vertices.keySet()) {
-				saida = saida + nomeVertice + ", ";
-			}
-			saida = saida.substring(0, saida.length() - 2);
-		}
-		System.out.println("V = {" + saida + "}");
-
-	}
-
-	public Vertice umVertice() {
-		Vertice v1 = new Vertice("v1");
-		return v1;
-	}
-
-	public String adjacentes(Vertice v) {
-
-		return v.toString();
-
-	}
-
-	public void grau(String nomeVertice) {
-		Vertice auxiliar = vertices.get(nomeVertice);
-		int grau = auxiliar.adjacentes.size();
-		System.out.println("O grau do vértice " + auxiliar.getNome() + " é " + grau);
 	}
 
 	public boolean ehRegular() {
+
+		if (vertices.isEmpty()) {
+			return false;
+		}
+
+		Integer n = null;
+
+		for (Vertice v : vertices.values()) {
+
+			if (n == null) {
+				n = v.obterGrau();
+			}
+
+			if (n.intValue() != v.obterGrau()) {
+				return false;
+
+			}
+		}
 		return true;
+
 	}
 
 	public boolean ehCompleto() {
+
+		int ordem = this.ordem() - 1;
+
+		for (Vertice vertice : vertices.values()) {
+			try {
+				if (this.grau(vertice.getChave()) != ordem) {
+					return false;
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
 		return true;
 	}
 
-	public int fechoTransitivo(Vertice v) {
-		return 1;
+	public Set<Vertice> fechoTransitivo(Object chaveVertice) throws Exception {
+		Set<Vertice> jaVisitados = new HashSet<Vertice>();
+		if (vertices.get(chaveVertice) == null) {
+			throw new Exception("Este vértice não existe!");
+		}
+		return procuraFechoTransitivo(vertices.get(chaveVertice), jaVisitados);
 	}
 
-	public boolean ehConexo() {
-		return true;
+	private Set<Vertice> procuraFechoTransitivo(Vertice vertice, Set<Vertice> jaVisitados) {
+		jaVisitados.add(vertice);
+		for (Vertice adjacente : vertice.getAdjacentes()) {
+			if (!jaVisitados.contains(adjacente)) {
+				procuraFechoTransitivo(adjacente, jaVisitados);
+			}
+		}
+		return jaVisitados;
 
 	}
 
-	public boolean ehArvore() {
-		return true;
+	public boolean ehConexo() throws Exception {
+		Set<Vertice> fechoTransitivo = fechoTransitivo(umVertice().getChave());
+		Set<Vertice> verticesSet = new HashSet<Vertice>(vertices.values());
+		return verticesSet.equals(fechoTransitivo);
+	}
 
+	public boolean ehArvore() throws Exception {
+		Vertice vertice = umVertice();
+		return this.ehConexo() && !haCicloCom(vertice, vertice, new HashSet<Vertice>());
+	}
+
+	private boolean haCicloCom(Vertice vertice, Vertice verticeAnterior, Set<Vertice> jaVisitados) throws Exception {
+		if (jaVisitados.contains(vertice)) {
+			return true;
+		}
+		jaVisitados.add(vertice);
+
+		for (Vertice adjacente : adjacentes(vertice.getChave())) {
+			if (!adjacente.equals(verticeAnterior)) {
+				return haCicloCom(adjacente, vertice, jaVisitados);
+			}
+		}
+		jaVisitados.remove(vertice);
+
+		return false;
 	}
 
 }

@@ -1,4 +1,5 @@
 package br.ufsc.ine5430.gomoku.grafo;
+
 import java.util.Scanner;
 
 public class Usuario {

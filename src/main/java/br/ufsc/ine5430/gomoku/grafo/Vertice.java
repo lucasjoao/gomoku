@@ -1,34 +1,45 @@
 package br.ufsc.ine5430.gomoku.grafo;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Vertice {
 
-	protected List<Vertice> adjacentes = new ArrayList<>();
-	private String nome;
+	private Set<Vertice> adjacentes = new HashSet<Vertice>();
+	private Object chave;
 
-	public Vertice(String n) {
-		this.nome = n;
+	public Vertice(Object chave) {
+		this.chave = chave;
 	}
 
-	public void setNome(String n) {
-		this.nome = n;
+	public Object getChave() {
+		return chave;
 	}
 
-	public String getNome() {
-
-		return nome;
-	}
-	
-	public String toString () {
-		
-		String s = "V = {";
+	public void removerAdjacentes() {
 		for (Vertice vertice : adjacentes) {
-
-			s = s + vertice.getNome() + ", ";
+			vertice.removerAdjacente(this);
 		}
+		adjacentes.clear();
+	}
 
-		s = s + "}";
-		return s;
+	public void removerAdjacente(Vertice vertice) {
+		adjacentes.remove(vertice);
+	}
+
+	public Set<Vertice> getAdjacentes() {
+		return adjacentes;
+	}
+
+	public boolean contemAdjacente(Vertice vertice) {
+		return adjacentes.contains(vertice);
+	}
+
+	public void adicionaAdjacente(Vertice vertice) {
+		adjacentes.add(vertice);
+	}
+
+	public int obterGrau() {
+		return adjacentes.size();
 	}
 }
