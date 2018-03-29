@@ -9,8 +9,6 @@
 	<name>gomoku</name>
 	<url>http://maven.apache.org</url>
 
-
-	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>junit</groupId>
@@ -19,7 +17,6 @@
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
