@@ -3,6 +3,9 @@ package br.ufsc.ine5430.gomoku.grafo;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
+
+@Getter
 public class Vertice {
 
 	private Set<Vertice> adjacentes = new HashSet<Vertice>();
@@ -10,10 +13,6 @@ public class Vertice {
 
 	public Vertice(Object chave) {
 		this.chave = chave;
-	}
-
-	public Object getChave() {
-		return chave;
 	}
 
 	public void removerAdjacentes() {
@@ -25,10 +24,6 @@ public class Vertice {
 
 	public void removerAdjacente(Vertice vertice) {
 		adjacentes.remove(vertice);
-	}
-
-	public Set<Vertice> getAdjacentes() {
-		return adjacentes;
 	}
 
 	public boolean contemAdjacente(Vertice vertice) {

@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class Grafo {
 
 	private Map<Object, Vertice> vertices = new HashMap<Object, Vertice>();
-
-	public Grafo() {
-	}
 
 	public void criarVertice(Object chaveVertice) throws Exception {
 
