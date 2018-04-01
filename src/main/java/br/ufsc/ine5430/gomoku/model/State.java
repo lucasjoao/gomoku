@@ -10,7 +10,7 @@ import lombok.Getter;
 public class State extends Vertice {
 
 	private List<List<Position>> pieces; // TODO: documentar {row, col}
-	private int[] lastMove;
+	private int[] lastMove; // TODO: sera que isso vai cair lo no miniMax, to achando que sim, na verdade, acho que sera preciso duplicar isso la
 	private static int id;
 
 	public State() {

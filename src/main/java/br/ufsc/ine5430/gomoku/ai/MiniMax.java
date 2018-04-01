@@ -86,6 +86,27 @@ public class MiniMax {
 	}
 
 	private int evaluate() {
+		int score = 0;
+		score += this.evaluateLine(false);
+		score += this.evaluateLine(true);
+		score += this.evaluateDiagonal(false);
+		score += this.evaluateDiagonal(true);
+		return score; // TODO: realmente necessario usar numero de rodadas? por enquanto nao
+	}
+
+	private int evaluateLine(boolean isVertical) {
+		// TODO: fazer primeiro para horizontal, depois deixar generico para ambos
+		// ter uma arrayList que ira possuir cada valor de sequence
+		// fazer for parecido com o do check
+		// mas se encontrar um empty a partir da segunda iteracao, nao deve parar
+		// deve parar somente a partir do segundo empty encontrado
+		// ter outra estrutura que ira possuir uma array que representa as duas posicoes extremas de cada sequence encontrada
+		// criar um enum para a pontuacao
+		// esse enum tera um metodo que recebe as duas estruturas criadas aqui e calcula a pontuacao com base nisso
+		return 0;
+	}
+
+	private int evaluateDiagonal(boolean isLeftToRight) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
