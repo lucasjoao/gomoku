@@ -20,7 +20,6 @@ public class MiniMax {
 		this.otherPlayer = turnOf == PlayersEnum.PC ? PlayersEnum.HUMAN : PlayersEnum.PC;
 	}
 
-
 	// TODO documentar, return int[2] of {row, col}
 	public int[] move() {
 		int[] result = this.algorithm(2, this.turnOf);
@@ -69,7 +68,7 @@ public class MiniMax {
 	private List<int[]> generateNextMoves() {
 		List<int[]> nextMoves = new ArrayList<>();
 
-		if (this.hasWon()) {
+		if (this.hasWon(PlayersEnum.HUMAN) || this.hasWon(PlayersEnum.PC)) {
 			return nextMoves;
 		}
 
@@ -91,11 +90,65 @@ public class MiniMax {
 		return 0;
 	}
 
-	private boolean hasWon() {
-		// TODO: how make this check?
+	private boolean hasWon(PlayersEnum player) {
+		// key == number of rounds
 		if ((int) this.state.getChave() < 5) {
 			return false;
+		} else if (this.checkLine(false, player)) {
+			// check horizontal line
+			return true;
+		} else if (this.checkLine(true, player)) {
+			// check vertical line
+			return true;
+		} else if (this.checkDiagonal(true, player)) {
+			// check diagonal from upper-left corner to lower-right corner
+			return true;
+		} else if (this.checkDiagonal(false, player)) {
+			// check diagonal from upper-right corner to lower-left corner
+			return true;
+		} else {
+			return false;
 		}
-		return true;
+	}
+
+	private boolean checkLine(boolean isVertical, PlayersEnum player) {
+		int sequence = 0;
+		int index = isVertical ? 0 : 1;
+		for (int i = this.state.getLastMove()[index] - 4; i <= i + 8; i++) {
+			if (i >= 0) {
+				Position position = isVertical ? this.state.getPieces().get(i).get(this.state.getLastMove()[1])
+											   : this.state.getPieces().get(this.state.getLastMove()[0]).get(i);
+				if (!position.isEmpty() && player == position.getPlayer()) {
+					sequence++;
+					if (sequence == 5) {
+						return true;
+					}
+				} else {
+					sequence = 0;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean checkDiagonal(boolean isLeftToRight, PlayersEnum player) {
+		int sequence = 0;
+		int colLastMove = this.state.getLastMove()[1];
+		int col = isLeftToRight ? colLastMove - 4 : colLastMove + 4;
+		for (int row = this.state.getLastMove()[0] - 4; row <= row + 8; row++) {
+			if (row >= 0 && col >= 0) {
+				Position position = this.state.getPieces().get(row).get(col);
+				if (!position.isEmpty() && player == position.getPlayer()) {
+					sequence++;
+					if (sequence == 5) {
+						return true;
+					}
+				} else {
+					sequence = 0;
+				}
+			}
+			col += isLeftToRight ? 1 : -1;
+		}
+		return false;
 	}
 }
