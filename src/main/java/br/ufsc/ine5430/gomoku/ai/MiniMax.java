@@ -11,6 +11,8 @@ public class MiniMax {
 
 	private State state;
 	// TODO: talvez o seed seja necessario para fazer a parada rodar, verificar se fiz certo
+	// TODO: revisar todos os lastsMoves
+	// TODO: checks de negativos devem considerar extremo do tabuleiro (15)
 	private PlayersEnum turnOf;
 	private PlayersEnum otherPlayer;
 
@@ -39,11 +41,12 @@ public class MiniMax {
 			bestScore = this.evaluate();
 		} else {
 			for (int[] move : nextMoves) {
-				Position position = state.getPieces().get(move[0]).get(move[1]);
+				Position position = this.state.getPieces().get(move[0]).get(move[1]);
 				position.setPlayer(player);
 
 				if (player == PlayersEnum.PC) {
 					currentScore = this.algorithm(depth - 1, this.otherPlayer)[0]; // TODO: check this when running
+					// TODO: como fazer para avaliar somente as minhas peças?
 					if (currentScore > bestScore) {
 						bestScore = currentScore;
 						bestRow = move[0];
@@ -94,20 +97,87 @@ public class MiniMax {
 		return score; // TODO: realmente necessario usar numero de rodadas? por enquanto nao
 	}
 
+	// TODO: documentar essa suruba
 	private int evaluateLine(boolean isVertical) {
-		// TODO: fazer primeiro para horizontal, depois deixar generico para ambos
-		// ter uma arrayList que ira possuir cada valor de sequence
-		// fazer for parecido com o do check
-		// mas se encontrar um empty a partir da segunda iteracao, nao deve parar
-		// deve parar somente a partir do segundo empty encontrado
-		// ter outra estrutura que ira possuir uma array que representa as duas posicoes extremas de cada sequence encontrada
-		// criar um enum para a pontuacao
-		// esse enum tera um metodo que recebe as duas estruturas criadas aqui e calcula a pontuacao com base nisso
-		return 0;
+		// TODO: fazer generico com o isVertical
+
+		// TODO: como fazer avaliacao para inimigo, so seto negativo no final?
+		int sequence = 0;
+		boolean enemyFound = false;
+		boolean hasEmpty = false;
+		List<int[]> extremes = new ArrayList<>();
+		for (int i = this.state.getLastMove()[1] - 1; i > i - 4; i--) {
+			if (i >= 0) { // FIXME todo linha 15
+				Position position = this.state.getPieces().get(this.state.getLastMove()[0]).get(i);
+
+				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+					// se eh a minha pedra
+					sequence++;
+				} else if (position.isEmpty()) {
+					if (!hasEmpty) {
+						// se esta vazia e eh a primeira vazia
+						sequence++;
+						hasEmpty = true;
+					} else {
+						// se eh a segunda vazia add como extremo a peca verificada anteriormente
+						extremes.add(new int[] {this.state.getLastMove()[0], i + 1});
+
+						if (this.state.getPieces().get(this.state.getLastMove()[0]).get(i + 1).isEmpty()) {
+							// seh a segunda vazia consecutiva, entao diminui da sequence
+							sequence--;
+						}
+
+						break;
+					}
+				} else {
+					// se eh pedra do inimigo
+					enemyFound = true;
+					break;
+				}
+			}
+		}
+
+		sequence++; // posicao que eu coloquei
+
+		for (int j = this.state.getLastMove()[1] + 1; j < j + 4; j++) {
+			if (j >= 0) { // FIXME todo linha 15
+				Position position = this.state.getPieces().get(this.state.getLastMove()[0]).get(j);
+
+				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+					// se eh a minha pedra
+					sequence++;
+				} else if (position.isEmpty()) {
+					if (!hasEmpty) {
+						// se esta vazia e eh a primeira vazia
+						sequence++;
+						hasEmpty = true;
+					} else {
+						// se eh a segunda vazia add como extremo a peca verificada anteriormente
+						extremes.add(new int[] {this.state.getLastMove()[0], j - 1});
+
+						if (this.state.getPieces().get(this.state.getLastMove()[0]).get(j - 1).isEmpty()) {
+							// seh a segunda vazia consecutiva, entao diminui da sequence
+							sequence--;
+						}
+
+						break;
+					}
+				} else {
+					// se eh pedra do inimigo
+					if (enemyFound && sequence < 5) {
+						// desconsidero se tem inimigo nas duas pontas e minha sequence eh menor que 5
+						sequence = 0;
+					}
+					break;
+				}
+			}
+		}
+
+		return GradesEnum.calculate(sequence, extremes);
 	}
 
 	private int evaluateDiagonal(boolean isLeftToRight) {
-		// TODO Auto-generated method stub
+		// TODO se basear no isLine e fazer generico
 		return 0;
 	}
 
@@ -138,7 +208,7 @@ public class MiniMax {
 		for (int i = this.state.getLastMove()[index] - 4; i <= i + 8; i++) {
 			if (i >= 0) {
 				Position position = isVertical ? this.state.getPieces().get(i).get(this.state.getLastMove()[1])
-											   : this.state.getPieces().get(this.state.getLastMove()[0]).get(i);
+						: this.state.getPieces().get(this.state.getLastMove()[0]).get(i);
 				if (!position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
 					if (sequence == 5) {
