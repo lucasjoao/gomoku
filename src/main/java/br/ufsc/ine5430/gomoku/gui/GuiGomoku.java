@@ -15,17 +15,16 @@ public class GuiGomoku {
 	private Map<Integer, String> tabuleiro = new HashMap<Integer, String>();
 
 	public GuiGomoku() {
-		for (int i = 1; i <= 225; i++) {
+		for (int i = 0; i < 225; i++) {
 			this.tabuleiro.put(i, "-");
 		}
 	}
 
 	public void printaMap() {
-
 		System.out.print("01");
 		for (int j = 1; j <= 225; j++) {
 
-			System.out.print(" [ " + this.tabuleiro.get(j) + " ] ");
+			System.out.print(" [ " + this.tabuleiro.get(j - 1) + " ] ");
 			if(j == 225) {
 				break;
 			}
@@ -37,11 +36,9 @@ public class GuiGomoku {
 					System.out.print(((j/15) + 1));
 				}
 			}
-
 		}
 
-		System.out.println("\n     A      B      C      D      F      G      H      I      J      K      L      M      N      O      P");
-
+		System.out.println("\n    01     02     03     04     05     06     07     08     09     10     11     12     13     14     15");
 	}
 
 	public int pecaLinha() {
@@ -53,20 +50,4 @@ public class GuiGomoku {
 		String coluna = JOptionPane.showInputDialog("Qual coluna humano (x) vai jogar?");
 		return Integer.parseInt(coluna);
 	}
-
-	public void printaMatrizNoTerminal() {
-		for (int i = 1; i <= 15; i++) {
-			if (i < 10) {
-				System.out.print("0" + i);
-			} else {
-				System.out.print(i);
-			}
-			for (int j = 0; j < 15; j++) {
-				System.out.print(" [-] ");
-			}
-			System.out.println("\n");
-		}
-		System.out.println("    A    B    C    D    F    G    H    I    J    K    L    M    N    O    P");
-	}
-
 }
