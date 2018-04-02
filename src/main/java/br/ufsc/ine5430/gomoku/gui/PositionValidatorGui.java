@@ -4,11 +4,10 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class PositionValidatorGui {
-
-	public PositionValidatorGui() {
-
-	}
 
 	public boolean check(Map<Integer, String> tabuleiro, int valor) {
 		if (valor < 1 || valor > 225) {
@@ -20,7 +19,7 @@ public class PositionValidatorGui {
 
 		} else {
 			return true;
-		
+
 		}
 	}
 }
