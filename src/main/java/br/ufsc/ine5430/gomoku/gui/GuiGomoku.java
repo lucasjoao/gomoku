@@ -42,12 +42,10 @@ public class GuiGomoku {
 	}
 
 	public int pecaLinha() {
-		String linha = JOptionPane.showInputDialog("Qual linha humano (x) vai jogar?");
-		return Integer.parseInt(linha);
+		return PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Qual linha humano (x) vai jogar?"));
 	}
 
 	public int pecaColuna() {
-		String coluna = JOptionPane.showInputDialog("Qual coluna humano (x) vai jogar?");
-		return Integer.parseInt(coluna);
+		return PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Qual coluna humano (x) vai jogar?"));
 	}
 }

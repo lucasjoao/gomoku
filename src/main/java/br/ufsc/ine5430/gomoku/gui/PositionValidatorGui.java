@@ -4,15 +4,14 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
-@NoArgsConstructor
 public class PositionValidatorGui {
 
-	public boolean check(Map<Integer, String> tabuleiro, int valor) {
+	public static boolean check(Map<Integer, String> tabuleiro, int valor) {
 		if (valor < 1 || valor > 225) {
+			JOptionPane.showMessageDialog(null, "Valor inválido! Escolha outro.");
 			return false;
-
 		} else if (!tabuleiro.get(valor).contains("-")) {
 			JOptionPane.showMessageDialog(null, "A casinha escolhida já está preenchida por uma peça! Escolha outra.");
 			return false;
@@ -22,4 +21,10 @@ public class PositionValidatorGui {
 
 		}
 	}
+
+	public static int checkInput(String input) {
+		return StringUtils.isNumeric(input) ? Integer.valueOf(input) : Integer.MIN_VALUE;
+	}
+
+
 }
