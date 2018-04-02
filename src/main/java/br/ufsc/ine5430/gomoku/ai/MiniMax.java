@@ -24,47 +24,51 @@ public class MiniMax {
 
 	// TODO documentar, return int[2] of {row, col}
 	public int[] move() {
-		int[] result = this.algorithm(2, this.turnOf);
+		int[] result = this.algorithm(2, this.turnOf, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return new int[] {result[1], result[2]};
 	}
 
 	// TODO documentar, return int[3] of {score, row, col}
-	private int[] algorithm(int depth, PlayersEnum player) {
+	private int[] algorithm(int depth, PlayersEnum player, int alpha, int beta) {
 		List<int[]> nextMoves = this.generateNextMoves();
 
-		int bestScore = player == PlayersEnum.PC ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-		int currentScore;
+		int score;
 		int bestRow = -1;
 		int bestCol = -1;
 
 		if (nextMoves.isEmpty() || depth == 0) {
-			bestScore = this.evaluate();
+			score = this.evaluate();
+			return new int[] {score, bestRow, bestCol};
 		} else {
 			for (int[] move : nextMoves) {
 				Position position = this.state.getPieces().get(move[0]).get(move[1]);
 				position.setPlayer(player);
 
 				if (player == PlayersEnum.PC) {
-					currentScore = this.algorithm(depth - 1, this.otherPlayer)[0]; // TODO: check this when running
+					score = this.algorithm(depth - 1, this.otherPlayer, alpha, beta)[0]; // TODO: check this when running
 					// TODO: como fazer para avaliar somente as minhas peças?
-					if (currentScore > bestScore) {
-						bestScore = currentScore;
+					if (score > alpha) {
+						alpha = score;
 						bestRow = move[0];
 						bestCol = move[1];
 					}
 				} else {
-					currentScore = this.algorithm(depth - 1, this.turnOf)[0]; // TODO: check this when running
-					if (currentScore < bestScore) {
-						bestScore = currentScore;
+					score = this.algorithm(depth - 1, this.turnOf, alpha, beta)[0]; // TODO: check this when running
+					if (score < beta) {
+						beta = score;
 						bestRow = move[0];
 						bestCol = move[1];
 					}
 				}
 
 				position.setPlayer(null);
+
+				if (alpha >= beta) {
+					break;
+				}
 			}
 		}
-		return new int[] {bestScore, bestRow, bestCol};
+		return new int[] {(player == PlayersEnum.PC) ? alpha : beta, bestRow, bestCol};
 	}
 
 	// TODO documentar, return nextMoves in a list of int[2] of {row, col}
