@@ -99,16 +99,18 @@ public class MiniMax {
 
 	// TODO: documentar essa suruba
 	private int evaluateLine(boolean isVertical) {
-		// TODO: fazer generico com o isVertical
-
 		// TODO: como fazer avaliacao para inimigo, so seto negativo no final?
 		int sequence = 0;
 		boolean enemyFound = false;
 		boolean hasEmpty = false;
 		List<int[]> extremes = new ArrayList<>();
-		for (int i = this.state.getLastMove()[1] - 1; i > i - 4; i--) {
+		int index = isVertical ? 0 : 1;
+		int[] lastMove = this.state.getLastMove();
+
+		for (int i = lastMove[index] - 1; i > i - 4; i--) {
 			if (i >= 0) { // FIXME todo linha 15
-				Position position = this.state.getPieces().get(this.state.getLastMove()[0]).get(i);
+				Position position = isVertical ? this.state.getPieces().get(i).get(lastMove[1])
+						: this.state.getPieces().get(lastMove[0]).get(i);
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
@@ -120,9 +122,11 @@ public class MiniMax {
 						hasEmpty = true;
 					} else {
 						// se eh a segunda vazia add como extremo a peca verificada anteriormente
-						extremes.add(new int[] {this.state.getLastMove()[0], i + 1});
+						int[] cordlastChecked = isVertical ? new int[] {i + 1, lastMove[1]} : new int[] {lastMove[0], i + 1};
+						extremes.add(cordlastChecked);
 
-						if (this.state.getPieces().get(this.state.getLastMove()[0]).get(i + 1).isEmpty()) {
+						Position lastChecked = isVertical ? this.state.getPieces().get(i + 1).get(lastMove[1]) : this.state.getPieces().get(lastMove[0]).get(i + 1);
+						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
 							sequence--;
 						}
@@ -139,9 +143,10 @@ public class MiniMax {
 
 		sequence++; // posicao que eu coloquei
 
-		for (int j = this.state.getLastMove()[1] + 1; j < j + 4; j++) {
+		for (int j = lastMove[index] + 1; j < j + 4; j++) {
 			if (j >= 0) { // FIXME todo linha 15
-				Position position = this.state.getPieces().get(this.state.getLastMove()[0]).get(j);
+				Position position = isVertical ? this.state.getPieces().get(j).get(lastMove[1])
+						: this.state.getPieces().get(lastMove[0]).get(j);
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
@@ -153,9 +158,11 @@ public class MiniMax {
 						hasEmpty = true;
 					} else {
 						// se eh a segunda vazia add como extremo a peca verificada anteriormente
-						extremes.add(new int[] {this.state.getLastMove()[0], j - 1});
+						int[] cordlastChecked = isVertical ? new int[] {j - 1, lastMove[1]} : new int[] {lastMove[0], j + 1};
+						extremes.add(cordlastChecked);
 
-						if (this.state.getPieces().get(this.state.getLastMove()[0]).get(j - 1).isEmpty()) {
+						Position lastChecked = isVertical ? this.state.getPieces().get(j - 1).get(lastMove[1]) : this.state.getPieces().get(lastMove[0]).get(j - 1);
+						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
 							sequence--;
 						}
@@ -177,8 +184,89 @@ public class MiniMax {
 	}
 
 	private int evaluateDiagonal(boolean isLeftToRight) {
-		// TODO se basear no isLine e fazer generico
-		return 0;
+		// TODO: como fazer avaliacao para inimigo, so seto negativo no final?
+		int sequence = 0;
+		boolean enemyFound = false;
+		boolean hasEmpty = false;
+		List<int[]> extremes = new ArrayList<>();
+		int[] lastMove = this.state.getLastMove();
+		int col = isLeftToRight ? lastMove[1] - 1 : lastMove[1] + 1;
+
+		for (int row = lastMove[0] - 1; row > row - 4; row--) {
+			if (row >= 0 && col >= 0) { // FIXME todo linha 15
+				Position position = this.state.getPieces().get(row).get(col);
+				col += isLeftToRight ? -1 : 1;
+
+				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+					// se eh a minha pedra
+					sequence++;
+				} else if (position.isEmpty()) {
+					if (!hasEmpty) {
+						// se esta vazia e eh a primeira vazia
+						sequence++;
+						hasEmpty = true;
+					} else {
+						// se eh a segunda vazia add como extremo a peca verificada anteriormente
+						int[] cordlastChecked = isLeftToRight ? new int[] {row + 1, col + 1} : new int[] {row + 1, col - 1};
+						extremes.add(cordlastChecked);
+
+						Position lastChecked = isLeftToRight ? this.state.getPieces().get(row + 1).get(col + 1) : this.state.getPieces().get(row + 1).get(col - 1);
+						if (lastChecked.isEmpty()) {
+							// seh a segunda vazia consecutiva, entao diminui da sequence
+							sequence--;
+						}
+
+						break;
+					}
+				} else {
+					// se eh pedra do inimigo
+					enemyFound = true;
+					break;
+				}
+			}
+		}
+
+		sequence++; // posicao que eu coloquei
+
+		col = isLeftToRight ? lastMove[1] + 1 : lastMove[1] - 1;
+		for (int row = lastMove[0] + 1; row < row + 4; row++) {
+			if (row >= 0 && col >= 0) { // FIXME todo linha 15
+				Position position = this.state.getPieces().get(row).get(col);
+				col += isLeftToRight ? 1 : -1;
+
+				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+					// se eh a minha pedra
+					sequence++;
+				} else if (position.isEmpty()) {
+					if (!hasEmpty) {
+						// se esta vazia e eh a primeira vazia
+						sequence++;
+						hasEmpty = true;
+					} else {
+						// se eh a segunda vazia add como extremo a peca verificada anteriormente
+						int[] cordlastChecked = isLeftToRight ? new int[] {row - 1, col - 1} : new int[] {row - 1, col + 1};
+						extremes.add(cordlastChecked);
+
+						Position lastChecked = isLeftToRight ? this.state.getPieces().get(row - 1).get(col - 1) : this.state.getPieces().get(row - 1).get(col + 1);
+						if (lastChecked.isEmpty()) {
+							// seh a segunda vazia consecutiva, entao diminui da sequence
+							sequence--;
+						}
+
+						break;
+					}
+				} else {
+					// se eh pedra do inimigo
+					if (enemyFound && sequence < 5) {
+						// desconsidero se tem inimigo nas duas pontas e minha sequence eh menor que 5
+						sequence = 0;
+					}
+					break;
+				}
+			}
+		}
+
+		return GradesEnum.calculate(sequence, extremes);
 	}
 
 	private boolean hasWon(PlayersEnum player) {
