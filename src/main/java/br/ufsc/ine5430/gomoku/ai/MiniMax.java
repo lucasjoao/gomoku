@@ -14,15 +14,11 @@ import br.ufsc.ine5430.gomoku.utils.PositionValidator;
 public class MiniMax {
 
 	private State state;
-	// TODO: talvez o seed seja necessario para fazer a parada rodar, verificar se fiz certo
-	// TODO: revisar todos os lastsMoves
-	// TODO: revisar todos os fors para ver se pego um bug similar aquele meu anterior
 	private PlayersEnum turnOf;
 	private PlayersEnum otherPlayer;
 	@Getter
 	private int loopCounter;
 
-	// TODO: necessário esse turnOf?
 	public MiniMax(State state, PlayersEnum turnOf) {
 		this.state = state;
 		this.turnOf = turnOf;
@@ -36,9 +32,12 @@ public class MiniMax {
 		return new int[] {result[1], result[2]};
 	}
 
-	// TODO documentar, return int[3] of {score, row, col}
+	// XXX documentar, return int[3] of {score, row, col}
 	private int[] algorithm(int depth, PlayersEnum player, int alpha, int beta) {
 		List<int[]> nextMoves = this.generateNextMoves();
+
+		this.turnOf = player;
+		this.otherPlayer = this.turnOf == PlayersEnum.PC ? PlayersEnum.HUMAN : PlayersEnum.PC;
 
 		int score;
 		int bestRow = -1;
@@ -46,6 +45,7 @@ public class MiniMax {
 
 		if (nextMoves.isEmpty() || depth == 0) {
 			score = this.evaluate();
+			score = this.turnOf == PlayersEnum.HUMAN ? -score : score;
 			return new int[] {score, bestRow, bestCol};
 		} else {
 			for (int[] move : nextMoves) {
@@ -53,17 +53,19 @@ public class MiniMax {
 				int posInMap = GomokuUtils.posInMap(move[0], move[1]);
 				Position position = this.state.getBoard().get(posInMap);
 				position.setPlayer(player);
+				position.setEmpty(false);
+				int[] lastMoveOriginal = this.state.getLastMove();
+				this.state.setLastMove(move);
 
 				if (player == PlayersEnum.PC) {
-					score = this.algorithm(depth - 1, this.otherPlayer, alpha, beta)[0]; // TODO: check this when running
-					// TODO: como fazer para avaliar somente as minhas peças?
+					score = this.algorithm(depth - 1, this.otherPlayer, alpha, beta)[0];
 					if (score > alpha) {
 						alpha = score;
 						bestRow = move[0];
 						bestCol = move[1];
 					}
 				} else {
-					score = this.algorithm(depth - 1, this.turnOf, alpha, beta)[0]; // TODO: check this when running
+					score = this.algorithm(depth - 1, this.turnOf, alpha, beta)[0];
 					if (score < beta) {
 						beta = score;
 						bestRow = move[0];
@@ -72,6 +74,8 @@ public class MiniMax {
 				}
 
 				position.setPlayer(null);
+				position.setEmpty(true);
+				this.state.setLastMove(lastMoveOriginal);
 
 				if (alpha >= beta) {
 					break;
@@ -113,7 +117,6 @@ public class MiniMax {
 
 	// XXX: documentar essa suruba
 	private int evaluateLine(boolean isVertical) {
-		// TODO: como fazer avaliacao para inimigo, so seto negativo no final?
 		int sequence = 0;
 		boolean enemyFound = false;
 		boolean hasEmpty = false;
@@ -121,7 +124,7 @@ public class MiniMax {
 		int index = isVertical ? 0 : 1;
 		int[] lastMove = this.state.getLastMove();
 
-		for (int i = lastMove[index] - 1; i > i - 4; i--) {
+		for (int i = lastMove[index] - 1; i > lastMove[index] - 5; i--) {
 			this.loopCounter++;
 			if (PositionValidator.check(i)) {
 				int posInMap = isVertical ? GomokuUtils.posInMap(i, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], i);
@@ -159,7 +162,7 @@ public class MiniMax {
 
 		sequence++; // posicao que eu coloquei
 
-		for (int j = lastMove[index] + 1; j < j + 4; j++) {
+		for (int j = lastMove[index] + 1; j < lastMove[index] + 5; j++) {
 			this.loopCounter++;
 			if (PositionValidator.check(j)) {
 				int posInMap = isVertical ? GomokuUtils.posInMap(j, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], j);
@@ -202,7 +205,6 @@ public class MiniMax {
 	}
 
 	private int evaluateDiagonal(boolean isLeftToRight) {
-		// TODO: como fazer avaliacao para inimigo, so seto negativo no final?
 		int sequence = 0;
 		boolean enemyFound = false;
 		boolean hasEmpty = false;
@@ -210,7 +212,7 @@ public class MiniMax {
 		int[] lastMove = this.state.getLastMove();
 		int col = isLeftToRight ? lastMove[1] - 1 : lastMove[1] + 1;
 
-		for (int row = lastMove[0] - 1; row > row - 4; row--) {
+		for (int row = lastMove[0] - 1; row > lastMove[0] - 5; row--) {
 			this.loopCounter++;
 			if (PositionValidator.check(row, col)) {
 				int posInMap = GomokuUtils.posInMap(row, col);
@@ -250,7 +252,7 @@ public class MiniMax {
 		sequence++; // posicao que eu coloquei
 
 		col = isLeftToRight ? lastMove[1] + 1 : lastMove[1] - 1;
-		for (int row = lastMove[0] + 1; row < row + 4; row++) {
+		for (int row = lastMove[0] + 1; row < lastMove[0] + 5; row++) {
 			this.loopCounter++;
 			if (PositionValidator.check(row, col)) {
 				int posInMap = GomokuUtils.posInMap(row, col);
@@ -317,7 +319,7 @@ public class MiniMax {
 	private boolean checkLine(boolean isVertical, PlayersEnum player) {
 		int sequence = 0;
 		int index = isVertical ? 0 : 1;
-		for (int i = this.state.getLastMove()[index] - 4; i <= i + 8; i++) {
+		for (int i = this.state.getLastMove()[index] - 4; i <= this.state.getLastMove()[index] + 4; i++) {
 			this.loopCounter++;
 			if (PositionValidator.check(i)) {
 				int posInMap = isVertical ? GomokuUtils.posInMap(i, this.state.getLastMove()[1]) : GomokuUtils.posInMap(this.state.getLastMove()[0], i);
@@ -339,7 +341,7 @@ public class MiniMax {
 		int sequence = 0;
 		int colLastMove = this.state.getLastMove()[1];
 		int col = isLeftToRight ? colLastMove - 4 : colLastMove + 4;
-		for (int row = this.state.getLastMove()[0] - 4; row <= row + 8; row++) {
+		for (int row = this.state.getLastMove()[0] - 4; row <= this.state.getLastMove()[0] + 4; row++) {
 			this.loopCounter++;
 			if (PositionValidator.check(row, col)) {
 				int posInMap = GomokuUtils.posInMap(row, col);
