@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.lang3.StringUtils;
 
 import br.ufsc.ine5430.gomoku.model.FormError;
@@ -32,7 +30,7 @@ public class PositionValidator {
 	 * (vazio); x (humano) ou o (máquina). A validação contempla valores OK para
 	 * linha e coluna, bem como avisa caso uma casa já fora ocupada
 	 * anteriormente.
-	 * 
+	 *
 	 * @param tabuleiro
 	 * @param valor
 	 * @return true se nenhum erro for encontrado ou false caso contrário
@@ -61,13 +59,18 @@ public class PositionValidator {
 	}
 
 	/**
-	 * Verifica se a determinada String passada como parâmetro é um numeral
-	 * 
+	 * Verifica se a determinada String passada como parâmetro é um numeral válido
+	 *
 	 * @param input
-	 * @return o valor correspondente por essa String, caso seja um numeral; ou
+	 * @return o valor correspondente por essa String, caso seja um numeral válido; ou
 	 *         o menor valor Integer existente, caso contrário (int)
 	 */
 	public static int checkInput(String input) {
-		return StringUtils.isNumeric(input) ? Integer.valueOf(input) : Integer.MIN_VALUE;
+		if (StringUtils.isNumeric(input)) {
+			Integer result = Integer.valueOf(input);
+			return PositionValidator.check(result) ? result : Integer.MIN_VALUE;
+		}
+
+		return Integer.MIN_VALUE;
 	}
 }

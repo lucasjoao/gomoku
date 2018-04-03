@@ -75,7 +75,7 @@ public class App {
 		lastState.getBoard().put(valor, new Position(PlayersEnum.HUMAN));
 		lastState = new State(lastState.getBoard(), new int[] { linha, coluna });
 
-		tabuleiro.put(valor, "o");
+		tabuleiro.put(valor, "x");
 		guiHandler.printaMap();
 		return true;
 	}
@@ -104,7 +104,7 @@ public class App {
 
 		System.out.println(
 				"Quantidade de iterações necessárias na classe MiniMax para a jogada: " + miniMax.getLoopCounter());
-		tabuleiro.put(valor, "x");
+		tabuleiro.put(valor, "o");
 		guiHandler.printaMap();
 	}
 
