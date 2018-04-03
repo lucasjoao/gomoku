@@ -13,4 +13,9 @@ public class Position {
 	public Position() {
 		this.empty = true;
 	}
+
+	public Position(PlayersEnum player) {
+		this.player = player;
+		this.empty = false;
+	}
 }

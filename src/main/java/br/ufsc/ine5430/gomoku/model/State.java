@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import br.ufsc.ine5430.gomoku.grafo.Vertice;
 
 @Getter
+@Setter
 public class State extends Vertice {
 
 	private Map<Integer, Position> board;
@@ -19,6 +21,12 @@ public class State extends Vertice {
 		this.board = new HashMap<Integer, Position>();
 		this.initializePieces();
 		id++;
+	}
+
+	public State(Map<Integer, Position> board, int[] lastMove) {
+		super(id);
+		this.board = board;
+		this.lastMove = lastMove;
 	}
 
 	private void initializePieces() {

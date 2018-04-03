@@ -4,8 +4,11 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import br.ufsc.ine5430.gomoku.ai.MiniMax;
 import br.ufsc.ine5430.gomoku.gui.GuiGomoku;
 import br.ufsc.ine5430.gomoku.gui.PositionValidatorGui;
+import br.ufsc.ine5430.gomoku.model.PlayersEnum;
+import br.ufsc.ine5430.gomoku.model.Position;
 import br.ufsc.ine5430.gomoku.model.State;
 
 public class App {
@@ -49,33 +52,40 @@ public class App {
 
 	private static boolean humanPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
-		int valor;
+		int valor, linha, coluna;
 		do {
-			int linha = guiHandler.pecaLinha();
+			linha = guiHandler.pecaLinha();
 			if (linha == Integer.MIN_VALUE) return false;
-			int coluna = guiHandler.pecaColuna();
+			coluna = guiHandler.pecaColuna();
 			if (coluna == Integer.MIN_VALUE) return false;
 			valor = PositionValidatorGui.posInMap(linha, coluna);
-		} while (PositionValidatorGui.check(tabuleiro, valor) == false);
+		} while (!PositionValidatorGui.check(tabuleiro, valor));
+
+		lastState.getBoard().put(valor, new Position(PlayersEnum.HUMAN));
+		lastState = new State(lastState.getBoard(), new int[] {linha, coluna});
 
 		tabuleiro.put(valor, "o");
 		guiHandler.printaMap();
 		return true;
 	}
 
-	// TODO: associar com ia
 	private static void pcPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
-		int valor = -1;
-		//		while (PositionValidatorGui.check(tabuleiro, valor) == false) {
-		int linha = (int) (Math.random() * 15 + 1);
-		int coluna = (int) (Math.random() * 15 + 1);
-		valor = PositionValidatorGui.posInMap(linha, coluna);
-		//		}
-		System.out.println(valor);
+		int valor, linha, coluna;
+
+		do {
+			MiniMax miniMax = new MiniMax(lastState, PlayersEnum.PC);
+			int[] cord = miniMax.move();
+			linha = cord[0];
+			coluna = cord[1];
+			valor = PositionValidatorGui.posInMap(linha, coluna);
+		} while (!PositionValidatorGui.check(tabuleiro, valor));
+
+		lastState.getBoard().put(valor, new Position(PlayersEnum.PC));
+		lastState = new State(lastState.getBoard(), new int[] {linha, coluna});
+
 		System.out.println("Quantidade de iterações necessárias para a jogada:"); // TODO: pegar do minimax
 		tabuleiro.put(valor, "x");
 		guiHandler.printaMap();
 	}
-
 }

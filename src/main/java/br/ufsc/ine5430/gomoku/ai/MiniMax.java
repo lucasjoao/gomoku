@@ -82,8 +82,8 @@ public class MiniMax {
 			return nextMoves;
 		}
 
-		for (int row = this.state.getLastMove()[0] - 2; row < row + 5; row++) {
-			for (int col = this.state.getLastMove()[1] - 2; col < col + 5; col++) {
+		for (int row = this.state.getLastMove()[0] - 2; row < this.state.getLastMove()[0] + 5; row++) {
+			for (int col = this.state.getLastMove()[1] - 2; col < this.state.getLastMove()[1] + 5; col++) {
 				int posInMap = PositionValidatorGui.posInMap(row, col);
 				if (row >= 0 && col >= 0 && this.state.getBoard().get(posInMap).isEmpty()) {
 					nextMoves.add(new int[] {row, col});
