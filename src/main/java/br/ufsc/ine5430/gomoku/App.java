@@ -50,7 +50,7 @@ public class App {
 		}
 	}
 
-	// TODO: deixar em outro lugar
+	// XXX: refatorar, deixar em outro lugar
 	public static boolean humanPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
 		int valor, linha, coluna;
@@ -70,13 +70,14 @@ public class App {
 		return true;
 	}
 
-	// TODO: deixar em outro lugar
+	// XXX: refatorar, deixar em outro lugar
 	public static void pcPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
 		int valor, linha, coluna;
+		MiniMax miniMax;
 
 		do {
-			MiniMax miniMax = new MiniMax(lastState, PlayersEnum.PC);
+			miniMax = new MiniMax(lastState, PlayersEnum.PC);
 			int[] cord = miniMax.move();
 			linha = cord[0];
 			coluna = cord[1];
@@ -86,7 +87,7 @@ public class App {
 		lastState.getBoard().put(valor, new Position(PlayersEnum.PC));
 		lastState = new State(lastState.getBoard(), new int[] {linha, coluna});
 
-		System.out.println("Quantidade de iterações necessárias para a jogada:"); // TODO: pegar do minimax
+		System.out.println("Quantidade de iterações necessárias na classe MiniMax para a jogada: " + miniMax.getLoopCounter());
 		tabuleiro.put(valor, "x");
 		guiHandler.printaMap();
 	}

@@ -15,10 +15,10 @@ public enum GradesEnum {
 	TRIPLA(3, 6385),
 	QUADRUPLA(4, 236246),
 	QUINTUPLA(5, Integer.MAX_VALUE),
-	// TODO: esta certo manter os tres proximos aqui?
-	CANTO(6, 10),
-	LATERAL(7, 41),
-	CENTRO(8, 165);
+	// XXX: documentar que eh irrelevante index pros tres proximos OU refatorar e criar um enum especifico para isso so com grade
+	CANTO(-1, 10),
+	LATERAL(-1, 41),
+	CENTRO(-1, 165);
 
 	private int index;
 	private int grade;
@@ -48,7 +48,6 @@ public enum GradesEnum {
 		return score;
 	}
 
-	// TODO: tem como deixar essa coisa mais bonita?
 	private static int getScoreByRegion(int[] extreme) {
 		int score = 0;
 		int row = extreme[0];

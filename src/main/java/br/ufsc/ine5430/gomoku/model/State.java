@@ -13,13 +13,14 @@ import br.ufsc.ine5430.gomoku.grafo.Vertice;
 public class State extends Vertice {
 
 	private Map<Integer, Position> board;
-	private int[] lastMove; // TODO: sera que isso vai cair lo no miniMax, to achando que sim, na verdade, acho que sera preciso duplicar isso la
+	private int[] lastMove;
 	private static int id;
 
 	public State() {
 		super(id);
 		this.board = new HashMap<Integer, Position>();
 		this.initializePieces();
+		this.lastMove = new int[] {7, 7}; // XXX: refatorar e documentar que se computador começa ele busca jogadas a partir do centro --> verificar se da de fazer isso mais bonito
 		id++;
 	}
 
@@ -31,7 +32,7 @@ public class State extends Vertice {
 
 	private void initializePieces() {
 		Position position = new Position();
-		// TODO: deixar generico em um utils?
+		// XXX: refatorar, deixar generico em um utils?
 		for (int i = 1; i < 225; i++) {
 			this.board.put(i, position);
 		}
