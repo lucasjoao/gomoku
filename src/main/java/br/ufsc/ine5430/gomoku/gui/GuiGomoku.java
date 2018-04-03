@@ -21,6 +21,8 @@ public class GuiGomoku {
 	}
 
 	public void printaMap() {
+		System.out.println();
+		System.out.println("Tabuleiro atual:");
 		System.out.print("01");
 		for (int j = 1; j <= 225; j++) {
 

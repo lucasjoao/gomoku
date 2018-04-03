@@ -2,27 +2,44 @@ package br.ufsc.ine5430.gomoku;
 
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import br.ufsc.ine5430.gomoku.gui.GuiGomoku;
 import br.ufsc.ine5430.gomoku.gui.PositionValidatorGui;
 
 public class App {
+
+	private static final int PC_START = 1;
+	private static final int HUMAN_START = 2;
 
 	public static void main(String[] args) {
 
 		GuiGomoku guiHandler = new GuiGomoku();
 
 		guiHandler.printaMap();
+		int whoStart = PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Digite o número de quem irá começar o jogo: \n 1 - pc \n 2 - você"));
 
 		boolean wannaPlay = true;
 		while (wannaPlay) {
-			wannaPlay = humanPlayer(guiHandler);
-			if (!wannaPlay) {
-				System.out.println("Jogo finalizado!");
+			if (PC_START == whoStart) {
+				pcPlayer(guiHandler);
+				wannaPlay = humanPlayer(guiHandler);
+				if (!wannaPlay) {
+					System.out.println("Jogo finalizado!");
+					break;
+				}
+			} else if (HUMAN_START == whoStart) {
+				wannaPlay = humanPlayer(guiHandler);
+				if (!wannaPlay) {
+					System.out.println("Jogo finalizado!");
+					break;
+				}
+				pcPlayer(guiHandler);
+			} else {
+				JOptionPane.showMessageDialog(null, "Não brinque! Opção inválida, jogo finalizado.");
 				break;
 			}
-			pcPlayer(guiHandler);
 		}
-
 	}
 
 	private static boolean humanPlayer(GuiGomoku guiHandler) {
@@ -41,6 +58,7 @@ public class App {
 		return true;
 	}
 
+	// TODO: associar com ia
 	private static void pcPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
 		int valor = -1;
@@ -50,6 +68,7 @@ public class App {
 		valor = (linha - 1) * 15 + coluna;
 		//		}
 		System.out.println(valor);
+		System.out.println("Quantidade de iterações necessárias para a jogada:"); // TODO: pegar do minimax
 		tabuleiro.put(valor, "x");
 		guiHandler.printaMap();
 	}
