@@ -28,7 +28,7 @@ public class MiniMax {
 
 	// XXX: documentar, return int[2] of {row, col}
 	public int[] move() {
-		int[] result = this.algorithm(2, this.turnOf, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		int[] result = this.algorithm(4, this.turnOf, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return new int[] {result[1], result[2]};
 	}
 
@@ -93,11 +93,12 @@ public class MiniMax {
 			return nextMoves;
 		}
 
-		for (int row = this.state.getLastMove()[0] - 2; row < this.state.getLastMove()[0] + 3; row++) {
+		for (int row = this.state.getLastMove()[0] - 4; row < this.state.getLastMove()[0] + 5; row++) {
 			for (int col = this.state.getLastMove()[1] - 2; col < this.state.getLastMove()[1] + 3; col++) {
 				this.loopCounter++;
 				int posInMap = GomokuUtils.posInMap(row, col);
-				if (PositionValidator.check(row, col) && this.state.getBoard().get(posInMap).isEmpty()) {
+				Position position = this.state.getBoard().get(posInMap);
+				if (position != null && PositionValidator.check(row, col) && position.isEmpty()) {
 					nextMoves.add(new int[] {row, col});
 				}
 			}
@@ -130,10 +131,10 @@ public class MiniMax {
 				int posInMap = isVertical ? GomokuUtils.posInMap(i, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], i);
 				Position position = this.state.getBoard().get(posInMap);
 
-				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+				if (position != null && !position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
 					sequence++;
-				} else if (position.isEmpty()) {
+				} else if (position != null && position.isEmpty()) {
 					if (!hasEmpty) {
 						// se esta vazia e eh a primeira vazia
 						sequence++;
@@ -168,10 +169,10 @@ public class MiniMax {
 				int posInMap = isVertical ? GomokuUtils.posInMap(j, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], j);
 				Position position = this.state.getBoard().get(posInMap);
 
-				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+				if (position != null && !position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
 					sequence++;
-				} else if (position.isEmpty()) {
+				} else if (position != null && position.isEmpty()) {
 					if (!hasEmpty) {
 						// se esta vazia e eh a primeira vazia
 						sequence++;
@@ -219,10 +220,10 @@ public class MiniMax {
 				Position position = this.state.getBoard().get(posInMap);
 				col += isLeftToRight ? -1 : 1;
 
-				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+				if (position != null && !position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
 					sequence++;
-				} else if (position.isEmpty()) {
+				} else if (position != null && position.isEmpty()) {
 					if (!hasEmpty) {
 						// se esta vazia e eh a primeira vazia
 						sequence++;
@@ -259,10 +260,10 @@ public class MiniMax {
 				Position position = this.state.getBoard().get(posInMap);
 				col += isLeftToRight ? 1 : -1;
 
-				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
+				if (position != null && !position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
 					sequence++;
-				} else if (position.isEmpty()) {
+				} else if (position != null && position.isEmpty()) {
 					if (!hasEmpty) {
 						// se esta vazia e eh a primeira vazia
 						sequence++;
@@ -321,7 +322,7 @@ public class MiniMax {
 			if (PositionValidator.check(i)) {
 				int posInMap = isVertical ? GomokuUtils.posInMap(i, this.state.getLastMove()[1]) : GomokuUtils.posInMap(this.state.getLastMove()[0], i);
 				Position position = this.state.getBoard().get(posInMap);
-				if (!position.isEmpty() && player == position.getPlayer()) {
+				if (position != null && !position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
 					if (sequence == 5) {
 						return true;
@@ -343,7 +344,7 @@ public class MiniMax {
 			if (PositionValidator.check(row, col)) {
 				int posInMap = GomokuUtils.posInMap(row, col);
 				Position position = this.state.getBoard().get(posInMap);
-				if (!position.isEmpty() && player == position.getPlayer()) {
+				if (position != null && !position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
 					if (sequence == 5) {
 						return true;
