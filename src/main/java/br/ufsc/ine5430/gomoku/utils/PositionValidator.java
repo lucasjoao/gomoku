@@ -11,6 +11,16 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PositionValidator {
 
+	public static boolean check(int rowOrCol) {
+		return PositionValidator.check(rowOrCol, rowOrCol);
+	}
+
+	public static boolean check(int row, int col) {
+		int max = 16;
+		int min = 0;
+		return max > row && row > min && max > col && col > min;
+	}
+
 	/**
 	 * O tabuleiro é composto de 225 casas, cada qual com sua chave e valor.
 	 * A chave é o ID sequencial e único.
