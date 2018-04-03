@@ -50,7 +50,8 @@ public class App {
 		}
 	}
 
-	private static boolean humanPlayer(GuiGomoku guiHandler) {
+	// TODO: deixar em outro lugar
+	public static boolean humanPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
 		int valor, linha, coluna;
 		do {
@@ -69,7 +70,8 @@ public class App {
 		return true;
 	}
 
-	private static void pcPlayer(GuiGomoku guiHandler) {
+	// TODO: deixar em outro lugar
+	public static void pcPlayer(GuiGomoku guiHandler) {
 		Map<Integer, String> tabuleiro = guiHandler.getTabuleiro();
 		int valor, linha, coluna;
 
