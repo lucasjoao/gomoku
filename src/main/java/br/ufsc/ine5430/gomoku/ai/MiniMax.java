@@ -3,6 +3,7 @@ package br.ufsc.ine5430.gomoku.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufsc.ine5430.gomoku.gui.PositionValidatorGui;
 import br.ufsc.ine5430.gomoku.model.PlayersEnum;
 import br.ufsc.ine5430.gomoku.model.Position;
 import br.ufsc.ine5430.gomoku.model.State;
@@ -16,6 +17,7 @@ public class MiniMax {
 	private PlayersEnum turnOf;
 	private PlayersEnum otherPlayer;
 
+	// TODO: necessário esse turnOf?
 	public MiniMax(State state, PlayersEnum turnOf) {
 		this.state = state;
 		this.turnOf = turnOf;
@@ -41,7 +43,8 @@ public class MiniMax {
 			return new int[] {score, bestRow, bestCol};
 		} else {
 			for (int[] move : nextMoves) {
-				Position position = this.state.getPieces().get(move[0]).get(move[1]);
+				int posInMap = PositionValidatorGui.posInMap(move[0], move[1]);
+				Position position = this.state.getBoard().get(posInMap);
 				position.setPlayer(player);
 
 				if (player == PlayersEnum.PC) {
@@ -81,7 +84,8 @@ public class MiniMax {
 
 		for (int row = this.state.getLastMove()[0] - 2; row < row + 5; row++) {
 			for (int col = this.state.getLastMove()[1] - 2; col < col + 5; col++) {
-				if (row >= 0 && col >= 0 && this.state.getPieces().get(row).get(col).isEmpty()) {
+				int posInMap = PositionValidatorGui.posInMap(row, col);
+				if (row >= 0 && col >= 0 && this.state.getBoard().get(posInMap).isEmpty()) {
 					nextMoves.add(new int[] {row, col});
 				}
 			}
@@ -113,8 +117,8 @@ public class MiniMax {
 
 		for (int i = lastMove[index] - 1; i > i - 4; i--) {
 			if (i >= 0) { // FIXME todo linha 15
-				Position position = isVertical ? this.state.getPieces().get(i).get(lastMove[1])
-						: this.state.getPieces().get(lastMove[0]).get(i);
+				int posInMap = isVertical ? PositionValidatorGui.posInMap(i, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], i);
+				Position position = this.state.getBoard().get(posInMap);
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
@@ -129,7 +133,8 @@ public class MiniMax {
 						int[] cordlastChecked = isVertical ? new int[] {i + 1, lastMove[1]} : new int[] {lastMove[0], i + 1};
 						extremes.add(cordlastChecked);
 
-						Position lastChecked = isVertical ? this.state.getPieces().get(i + 1).get(lastMove[1]) : this.state.getPieces().get(lastMove[0]).get(i + 1);
+						int posLastChecked = isVertical ? PositionValidatorGui.posInMap(i + 1, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], i + 1);
+						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
 							sequence--;
@@ -149,8 +154,8 @@ public class MiniMax {
 
 		for (int j = lastMove[index] + 1; j < j + 4; j++) {
 			if (j >= 0) { // FIXME todo linha 15
-				Position position = isVertical ? this.state.getPieces().get(j).get(lastMove[1])
-						: this.state.getPieces().get(lastMove[0]).get(j);
+				int posInMap = isVertical ? PositionValidatorGui.posInMap(j, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], j);
+				Position position = this.state.getBoard().get(posInMap);
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
 					// se eh a minha pedra
@@ -165,7 +170,8 @@ public class MiniMax {
 						int[] cordlastChecked = isVertical ? new int[] {j - 1, lastMove[1]} : new int[] {lastMove[0], j + 1};
 						extremes.add(cordlastChecked);
 
-						Position lastChecked = isVertical ? this.state.getPieces().get(j - 1).get(lastMove[1]) : this.state.getPieces().get(lastMove[0]).get(j - 1);
+						int posLastChecked = isVertical ? PositionValidatorGui.posInMap(j - 1, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], j - 1);
+						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
 							sequence--;
@@ -198,7 +204,8 @@ public class MiniMax {
 
 		for (int row = lastMove[0] - 1; row > row - 4; row--) {
 			if (row >= 0 && col >= 0) { // FIXME todo linha 15
-				Position position = this.state.getPieces().get(row).get(col);
+				int posInMap = PositionValidatorGui.posInMap(row, col);
+				Position position = this.state.getBoard().get(posInMap);
 				col += isLeftToRight ? -1 : 1;
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
@@ -214,7 +221,8 @@ public class MiniMax {
 						int[] cordlastChecked = isLeftToRight ? new int[] {row + 1, col + 1} : new int[] {row + 1, col - 1};
 						extremes.add(cordlastChecked);
 
-						Position lastChecked = isLeftToRight ? this.state.getPieces().get(row + 1).get(col + 1) : this.state.getPieces().get(row + 1).get(col - 1);
+						int posLastChecked = isLeftToRight ? PositionValidatorGui.posInMap(row + 1, col + 1) : PositionValidatorGui.posInMap(row + 1, col - 1);
+						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
 							sequence--;
@@ -235,7 +243,8 @@ public class MiniMax {
 		col = isLeftToRight ? lastMove[1] + 1 : lastMove[1] - 1;
 		for (int row = lastMove[0] + 1; row < row + 4; row++) {
 			if (row >= 0 && col >= 0) { // FIXME todo linha 15
-				Position position = this.state.getPieces().get(row).get(col);
+				int posInMap = PositionValidatorGui.posInMap(row, col);
+				Position position = this.state.getBoard().get(posInMap);
 				col += isLeftToRight ? 1 : -1;
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
@@ -251,7 +260,8 @@ public class MiniMax {
 						int[] cordlastChecked = isLeftToRight ? new int[] {row - 1, col - 1} : new int[] {row - 1, col + 1};
 						extremes.add(cordlastChecked);
 
-						Position lastChecked = isLeftToRight ? this.state.getPieces().get(row - 1).get(col - 1) : this.state.getPieces().get(row - 1).get(col + 1);
+						int posLastChecked = isLeftToRight ? PositionValidatorGui.posInMap(row - 1, col - 1) : PositionValidatorGui.posInMap(row - 1, col + 1);
+						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
 							sequence--;
@@ -299,8 +309,8 @@ public class MiniMax {
 		int index = isVertical ? 0 : 1;
 		for (int i = this.state.getLastMove()[index] - 4; i <= i + 8; i++) {
 			if (i >= 0) {
-				Position position = isVertical ? this.state.getPieces().get(i).get(this.state.getLastMove()[1])
-						: this.state.getPieces().get(this.state.getLastMove()[0]).get(i);
+				int posInMap = isVertical ? PositionValidatorGui.posInMap(i, this.state.getLastMove()[1]) : PositionValidatorGui.posInMap(this.state.getLastMove()[0], i);
+				Position position = this.state.getBoard().get(posInMap);
 				if (!position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
 					if (sequence == 5) {
@@ -320,7 +330,8 @@ public class MiniMax {
 		int col = isLeftToRight ? colLastMove - 4 : colLastMove + 4;
 		for (int row = this.state.getLastMove()[0] - 4; row <= row + 8; row++) {
 			if (row >= 0 && col >= 0) {
-				Position position = this.state.getPieces().get(row).get(col);
+				int posInMap = PositionValidatorGui.posInMap(row, col);
+				Position position = this.state.getBoard().get(posInMap);
 				if (!position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
 					if (sequence == 5) {

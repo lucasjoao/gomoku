@@ -26,5 +26,10 @@ public class PositionValidatorGui {
 		return StringUtils.isNumeric(input) ? Integer.valueOf(input) : Integer.MIN_VALUE;
 	}
 
+	//TODO: botar isso em um Utils?
+	public static int posInMap(int row, int col) {
+		return (row - 1) * 15 + col;
+	}
+
 
 }

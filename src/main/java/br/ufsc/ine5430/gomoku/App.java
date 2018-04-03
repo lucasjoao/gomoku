@@ -6,11 +6,14 @@ import javax.swing.JOptionPane;
 
 import br.ufsc.ine5430.gomoku.gui.GuiGomoku;
 import br.ufsc.ine5430.gomoku.gui.PositionValidatorGui;
+import br.ufsc.ine5430.gomoku.model.State;
 
 public class App {
 
 	private static final int PC_START = 1;
 	private static final int HUMAN_START = 2;
+
+	private static State lastState;
 
 	public static void main(String[] args) {
 
@@ -18,6 +21,8 @@ public class App {
 
 		guiHandler.printaMap();
 		int whoStart = PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Digite o número de quem irá começar o jogo: \n 1 - pc \n 2 - você"));
+
+		lastState = new State();
 
 		boolean wannaPlay = true;
 		while (wannaPlay) {
@@ -50,7 +55,7 @@ public class App {
 			if (linha == Integer.MIN_VALUE) return false;
 			int coluna = guiHandler.pecaColuna();
 			if (coluna == Integer.MIN_VALUE) return false;
-			valor = (linha - 1) * 15 + coluna;
+			valor = PositionValidatorGui.posInMap(linha, coluna);
 		} while (PositionValidatorGui.check(tabuleiro, valor) == false);
 
 		tabuleiro.put(valor, "o");
@@ -65,7 +70,7 @@ public class App {
 		//		while (PositionValidatorGui.check(tabuleiro, valor) == false) {
 		int linha = (int) (Math.random() * 15 + 1);
 		int coluna = (int) (Math.random() * 15 + 1);
-		valor = (linha - 1) * 15 + coluna;
+		valor = PositionValidatorGui.posInMap(linha, coluna);
 		//		}
 		System.out.println(valor);
 		System.out.println("Quantidade de iterações necessárias para a jogada:"); // TODO: pegar do minimax

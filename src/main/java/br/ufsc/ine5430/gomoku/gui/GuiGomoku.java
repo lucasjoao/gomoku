@@ -15,7 +15,7 @@ public class GuiGomoku {
 	private Map<Integer, String> tabuleiro = new HashMap<Integer, String>();
 
 	public GuiGomoku() {
-		for (int i = 0; i < 225; i++) {
+		for (int i = 1; i <= 225; i++) {
 			this.tabuleiro.put(i, "-");
 		}
 	}
@@ -26,7 +26,7 @@ public class GuiGomoku {
 		System.out.print("01");
 		for (int j = 1; j <= 225; j++) {
 
-			System.out.print(" [ " + this.tabuleiro.get(j - 1) + " ] ");
+			System.out.print(" [ " + this.tabuleiro.get(j) + " ] ");
 			if(j == 225) {
 				break;
 			}
