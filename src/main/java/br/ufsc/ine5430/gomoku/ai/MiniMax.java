@@ -295,11 +295,8 @@ public class MiniMax {
 		return GradesEnum.calculate(sequence, extremes);
 	}
 
-	private boolean hasWon(PlayersEnum player) {
-		// key == number of rounds
-		if ((int) this.state.getChave() < 5) {
-			return false;
-		} else if (this.checkLine(false, player)) {
+	public boolean hasWon(PlayersEnum player) {
+		if (this.checkLine(false, player)) {
 			// check horizontal line
 			return true;
 		} else if (this.checkLine(true, player)) {

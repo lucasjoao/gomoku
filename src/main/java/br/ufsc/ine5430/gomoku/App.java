@@ -34,23 +34,39 @@ public class App {
 		while (wannaPlay) {
 			if (PC_START == whoStart) {
 				pcPlayer(guiHandler);
+				if (hasWon(PlayersEnum.PC)) break;
+
 				wannaPlay = humanPlayer(guiHandler);
 				if (!wannaPlay) {
 					System.out.println("Jogo finalizado!");
 					break;
 				}
+				if (hasWon(PlayersEnum.HUMAN)) break;
 			} else if (HUMAN_START == whoStart) {
 				wannaPlay = humanPlayer(guiHandler);
 				if (!wannaPlay) {
 					System.out.println("Jogo finalizado!");
 					break;
 				}
+				if (hasWon(PlayersEnum.HUMAN)) break;
+
 				pcPlayer(guiHandler);
+				if (hasWon(PlayersEnum.PC)) break;
 			} else {
 				JOptionPane.showMessageDialog(null, "Não brinque! Opção inválida, jogo finalizado.");
 				break;
 			}
 		}
+	}
+
+	// XXX: refatorar, deixar em outro lugar
+	private static boolean hasWon(PlayersEnum player) {
+		MiniMax miniMax = new MiniMax(lastState, player);
+		boolean hasWon = miniMax.hasWon(player);
+		if (hasWon) {
+			System.out.println(player.getText() + " VENCEU!!!");
+		}
+		return hasWon;
 	}
 
 	// XXX: refatorar, deixar em outro lugar

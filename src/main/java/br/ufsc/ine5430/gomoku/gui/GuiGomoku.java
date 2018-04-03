@@ -10,12 +10,13 @@ import lombok.Setter;
 
 import br.ufsc.ine5430.gomoku.utils.PositionValidator;
 
-@Getter
-@Setter
 
 /**
- * Classe que compõe toda a interface (via linha de comando) do jogo Gomoku 
+ * Classe que compõe toda a interface (via linha de comando) do jogo Gomoku
  */
+
+@Getter
+@Setter
 public class GuiGomoku {
 
 	private Map<Integer, String> tabuleiro = new HashMap<Integer, String>();
