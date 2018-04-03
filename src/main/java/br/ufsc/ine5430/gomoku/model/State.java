@@ -32,7 +32,6 @@ public class State extends Vertice {
 
 	private void initializePieces() {
 		Position position = new Position();
-		// XXX: refatorar, deixar generico em um utils?
 		for (int i = 1; i < 225; i++) {
 			this.board.put(i, position);
 		}

@@ -1,4 +1,4 @@
-package br.ufsc.ine5430.gomoku.gui;
+package br.ufsc.ine5430.gomoku.utils;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Classe de validação para verificar se o número passado como linha e coluna são vålidos
  */
-public class PositionValidatorGui {
+public class PositionValidator {
 
 	/**
 	 * O tabuleiro é composto de 225 casas, cada qual com sua chave e valor.
@@ -42,11 +42,4 @@ public class PositionValidatorGui {
 	public static int checkInput(String input) {
 		return StringUtils.isNumeric(input) ? Integer.valueOf(input) : Integer.MIN_VALUE;
 	}
-
-	//XXX: refatorar, botar isso em um Utils?
-	public static int posInMap(int row, int col) {
-		return (row - 1) * 15 + col;
-	}
-
-
 }

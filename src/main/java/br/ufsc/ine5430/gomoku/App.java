@@ -6,10 +6,11 @@ import javax.swing.JOptionPane;
 
 import br.ufsc.ine5430.gomoku.ai.MiniMax;
 import br.ufsc.ine5430.gomoku.gui.GuiGomoku;
-import br.ufsc.ine5430.gomoku.gui.PositionValidatorGui;
 import br.ufsc.ine5430.gomoku.model.PlayersEnum;
 import br.ufsc.ine5430.gomoku.model.Position;
 import br.ufsc.ine5430.gomoku.model.State;
+import br.ufsc.ine5430.gomoku.utils.GomokuUtils;
+import br.ufsc.ine5430.gomoku.utils.PositionValidator;
 
 public class App {
 
@@ -23,7 +24,7 @@ public class App {
 		GuiGomoku guiHandler = new GuiGomoku();
 
 		guiHandler.printaMap();
-		int whoStart = PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Digite o número de quem irá começar o jogo: \n 1 - pc \n 2 - você"));
+		int whoStart = PositionValidator.checkInput(JOptionPane.showInputDialog("Digite o número de quem irá começar o jogo: \n 1 - pc \n 2 - você"));
 
 		lastState = new State();
 
@@ -59,8 +60,8 @@ public class App {
 			if (linha == Integer.MIN_VALUE) return false;
 			coluna = guiHandler.pecaColuna();
 			if (coluna == Integer.MIN_VALUE) return false;
-			valor = PositionValidatorGui.posInMap(linha, coluna);
-		} while (!PositionValidatorGui.check(tabuleiro, valor));
+			valor = GomokuUtils.posInMap(linha, coluna);
+		} while (!PositionValidator.check(tabuleiro, valor));
 
 		lastState.getBoard().put(valor, new Position(PlayersEnum.HUMAN));
 		lastState = new State(lastState.getBoard(), new int[] {linha, coluna});
@@ -81,8 +82,8 @@ public class App {
 			int[] cord = miniMax.move();
 			linha = cord[0];
 			coluna = cord[1];
-			valor = PositionValidatorGui.posInMap(linha, coluna);
-		} while (!PositionValidatorGui.check(tabuleiro, valor));
+			valor = GomokuUtils.posInMap(linha, coluna);
+		} while (!PositionValidator.check(tabuleiro, valor));
 
 		lastState.getBoard().put(valor, new Position(PlayersEnum.PC));
 		lastState = new State(lastState.getBoard(), new int[] {linha, coluna});

@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.Setter;
 
+import br.ufsc.ine5430.gomoku.utils.PositionValidator;
+
 @Getter
 @Setter
 
@@ -63,7 +65,7 @@ public class GuiGomoku {
 	 * @return o valor chave da posição x onde possivelmente será colocada a pecinha do humano (int)
 	 */
 	public int pecaLinha() {
-		return PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Qual linha humano (x) vai jogar?"));
+		return PositionValidator.checkInput(JOptionPane.showInputDialog("Qual linha humano (x) vai jogar?"));
 	}
 
 	/**
@@ -71,6 +73,6 @@ public class GuiGomoku {
 	 * @return o valor chave da posição y onde possivelmente será colocada a pecinha do humano (int)
 	 */
 	public int pecaColuna() {
-		return PositionValidatorGui.checkInput(JOptionPane.showInputDialog("Qual coluna humano (x) vai jogar?"));
+		return PositionValidator.checkInput(JOptionPane.showInputDialog("Qual coluna humano (x) vai jogar?"));
 	}
 }

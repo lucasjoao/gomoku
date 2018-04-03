@@ -5,10 +5,10 @@ import java.util.List;
 
 import lombok.Getter;
 
-import br.ufsc.ine5430.gomoku.gui.PositionValidatorGui;
 import br.ufsc.ine5430.gomoku.model.PlayersEnum;
 import br.ufsc.ine5430.gomoku.model.Position;
 import br.ufsc.ine5430.gomoku.model.State;
+import br.ufsc.ine5430.gomoku.utils.GomokuUtils;
 
 public class MiniMax {
 
@@ -50,7 +50,7 @@ public class MiniMax {
 		} else {
 			for (int[] move : nextMoves) {
 				this.loopCounter++;
-				int posInMap = PositionValidatorGui.posInMap(move[0], move[1]);
+				int posInMap = GomokuUtils.posInMap(move[0], move[1]);
 				Position position = this.state.getBoard().get(posInMap);
 				position.setPlayer(player);
 
@@ -92,7 +92,7 @@ public class MiniMax {
 		for (int row = this.state.getLastMove()[0] - 2; row < this.state.getLastMove()[0] + 3; row++) {
 			for (int col = this.state.getLastMove()[1] - 2; col < this.state.getLastMove()[1] + 3; col++) {
 				this.loopCounter++;
-				int posInMap = PositionValidatorGui.posInMap(row, col);
+				int posInMap = GomokuUtils.posInMap(row, col);
 				if (row >= 0 && col >= 0 && this.state.getBoard().get(posInMap).isEmpty()) {
 					nextMoves.add(new int[] {row, col});
 				}
@@ -124,7 +124,7 @@ public class MiniMax {
 		for (int i = lastMove[index] - 1; i > i - 4; i--) {
 			this.loopCounter++;
 			if (i >= 0) { // FIXME todo linha 15
-				int posInMap = isVertical ? PositionValidatorGui.posInMap(i, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], i);
+				int posInMap = isVertical ? GomokuUtils.posInMap(i, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], i);
 				Position position = this.state.getBoard().get(posInMap);
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
@@ -140,7 +140,7 @@ public class MiniMax {
 						int[] cordlastChecked = isVertical ? new int[] {i + 1, lastMove[1]} : new int[] {lastMove[0], i + 1};
 						extremes.add(cordlastChecked);
 
-						int posLastChecked = isVertical ? PositionValidatorGui.posInMap(i + 1, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], i + 1);
+						int posLastChecked = isVertical ? GomokuUtils.posInMap(i + 1, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], i + 1);
 						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
@@ -162,7 +162,7 @@ public class MiniMax {
 		for (int j = lastMove[index] + 1; j < j + 4; j++) {
 			this.loopCounter++;
 			if (j >= 0) { // FIXME todo linha 15
-				int posInMap = isVertical ? PositionValidatorGui.posInMap(j, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], j);
+				int posInMap = isVertical ? GomokuUtils.posInMap(j, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], j);
 				Position position = this.state.getBoard().get(posInMap);
 
 				if (!position.isEmpty() && position.getPlayer() == this.turnOf) {
@@ -178,7 +178,7 @@ public class MiniMax {
 						int[] cordlastChecked = isVertical ? new int[] {j - 1, lastMove[1]} : new int[] {lastMove[0], j + 1};
 						extremes.add(cordlastChecked);
 
-						int posLastChecked = isVertical ? PositionValidatorGui.posInMap(j - 1, lastMove[1]) : PositionValidatorGui.posInMap(lastMove[0], j - 1);
+						int posLastChecked = isVertical ? GomokuUtils.posInMap(j - 1, lastMove[1]) : GomokuUtils.posInMap(lastMove[0], j - 1);
 						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
@@ -213,7 +213,7 @@ public class MiniMax {
 		for (int row = lastMove[0] - 1; row > row - 4; row--) {
 			this.loopCounter++;
 			if (row >= 0 && col >= 0) { // FIXME todo linha 15
-				int posInMap = PositionValidatorGui.posInMap(row, col);
+				int posInMap = GomokuUtils.posInMap(row, col);
 				Position position = this.state.getBoard().get(posInMap);
 				col += isLeftToRight ? -1 : 1;
 
@@ -230,7 +230,7 @@ public class MiniMax {
 						int[] cordlastChecked = isLeftToRight ? new int[] {row + 1, col + 1} : new int[] {row + 1, col - 1};
 						extremes.add(cordlastChecked);
 
-						int posLastChecked = isLeftToRight ? PositionValidatorGui.posInMap(row + 1, col + 1) : PositionValidatorGui.posInMap(row + 1, col - 1);
+						int posLastChecked = isLeftToRight ? GomokuUtils.posInMap(row + 1, col + 1) : GomokuUtils.posInMap(row + 1, col - 1);
 						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
@@ -253,7 +253,7 @@ public class MiniMax {
 		for (int row = lastMove[0] + 1; row < row + 4; row++) {
 			this.loopCounter++;
 			if (row >= 0 && col >= 0) { // FIXME todo linha 15
-				int posInMap = PositionValidatorGui.posInMap(row, col);
+				int posInMap = GomokuUtils.posInMap(row, col);
 				Position position = this.state.getBoard().get(posInMap);
 				col += isLeftToRight ? 1 : -1;
 
@@ -270,7 +270,7 @@ public class MiniMax {
 						int[] cordlastChecked = isLeftToRight ? new int[] {row - 1, col - 1} : new int[] {row - 1, col + 1};
 						extremes.add(cordlastChecked);
 
-						int posLastChecked = isLeftToRight ? PositionValidatorGui.posInMap(row - 1, col - 1) : PositionValidatorGui.posInMap(row - 1, col + 1);
+						int posLastChecked = isLeftToRight ? GomokuUtils.posInMap(row - 1, col - 1) : GomokuUtils.posInMap(row - 1, col + 1);
 						Position lastChecked = this.state.getBoard().get(posLastChecked);
 						if (lastChecked.isEmpty()) {
 							// seh a segunda vazia consecutiva, entao diminui da sequence
@@ -320,7 +320,7 @@ public class MiniMax {
 		for (int i = this.state.getLastMove()[index] - 4; i <= i + 8; i++) {
 			this.loopCounter++;
 			if (i >= 0) {
-				int posInMap = isVertical ? PositionValidatorGui.posInMap(i, this.state.getLastMove()[1]) : PositionValidatorGui.posInMap(this.state.getLastMove()[0], i);
+				int posInMap = isVertical ? GomokuUtils.posInMap(i, this.state.getLastMove()[1]) : GomokuUtils.posInMap(this.state.getLastMove()[0], i);
 				Position position = this.state.getBoard().get(posInMap);
 				if (!position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
@@ -342,7 +342,7 @@ public class MiniMax {
 		for (int row = this.state.getLastMove()[0] - 4; row <= row + 8; row++) {
 			this.loopCounter++;
 			if (row >= 0 && col >= 0) {
-				int posInMap = PositionValidatorGui.posInMap(row, col);
+				int posInMap = GomokuUtils.posInMap(row, col);
 				Position position = this.state.getBoard().get(posInMap);
 				if (!position.isEmpty() && player == position.getPlayer()) {
 					sequence++;
