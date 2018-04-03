@@ -76,7 +76,7 @@ public class Grafo {
 	}
 
 	/**
-	 * Desconect (retira) a aresta de ligação entre dois vértices
+	 * Desconecta (retira) a aresta de ligação entre dois vértices
 	 * @param chaveVertice1
 	 * @param chaveVertice2
 	 * @throws Exception
@@ -108,7 +108,7 @@ public class Grafo {
 	}
 
 	/**
-	 * Uma collection que agruda múltiplos objetos vértice
+	 * Uma collection que agrupa múltiplos objetos vértice
 	 * @return a collection de todos os vértices
 	 */
 	public Collection<Vertice> getVertices() {
@@ -130,7 +130,7 @@ public class Grafo {
 	}
 
 	/**
-	 * Vértices adjacente de um vértice são aqueles ligados imediatamente por uma aresta
+	 * Vértices adjacentes de um vértice são aqueles ligados imediatamente por uma aresta
 	 * @param chaveVertice
 	 * @return um conjunto de vértices adjacentes ao vértice passado como parâmentro (Set<Vertice>)
 	 * @throws Exception
@@ -147,7 +147,7 @@ public class Grafo {
 	}
 
 	/**
-	 * O Grau de um vértice indica a quantos outros vértices está ligado por arestas
+	 * O Grau de um vértice indica a quantos outros vértices este está ligado por arestas
 	 * @param chaveVertice
 	 * @return o número de ligações (arestas) que o vértice passado por parâmetro possui (int)
 	 * @throws Exception
