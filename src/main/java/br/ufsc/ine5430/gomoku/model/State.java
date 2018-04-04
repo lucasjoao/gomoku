@@ -15,12 +15,13 @@ public class State extends Vertice {
 	private Map<Integer, Position> board;
 	private int[] lastMove;
 	private static int id;
+	private final int[] CENTRAL_POSITION = new int[] {7, 7};
 
 	public State() {
 		super(id);
 		this.board = new HashMap<Integer, Position>();
 		this.initializePieces();
-		this.lastMove = new int[] {7, 7}; // XXX: refatorar e documentar que se computador começa ele busca jogadas a partir do centro --> verificar se da de fazer isso mais bonito
+		this.lastMove = this.CENTRAL_POSITION; // XXX: documentar que se computador começa ele busca jogadas a partir do centro
 		id++;
 	}
 

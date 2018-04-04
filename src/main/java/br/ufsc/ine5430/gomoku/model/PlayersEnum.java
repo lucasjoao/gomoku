@@ -6,8 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum PlayersEnum {
-	PC("PC"),
-	HUMAN("VOCÊ");
+	PC(1, "PC"),
+	HUMAN(2, "VOCÊ");
 
+	private int index;
 	private String text;
 }

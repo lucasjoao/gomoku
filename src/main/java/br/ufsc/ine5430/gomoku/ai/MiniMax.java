@@ -202,7 +202,7 @@ public class MiniMax {
 			}
 		}
 
-		return GradesEnum.calculate(sequence, extremes);
+		return this.calculate(sequence, extremes);
 	}
 
 	private int evaluateDiagonal(boolean isLeftToRight) {
@@ -293,7 +293,7 @@ public class MiniMax {
 			}
 		}
 
-		return GradesEnum.calculate(sequence, extremes);
+		return this.calculate(sequence, extremes);
 	}
 
 	public boolean hasWon(PlayersEnum player) {
@@ -356,5 +356,11 @@ public class MiniMax {
 			col += isLeftToRight ? 1 : -1;
 		}
 		return false;
+	}
+
+	private int calculate(int sequence, List<int[]> extremes) {
+		int score = SequenceGradesEnum.calculate(sequence);
+		score += RegionGradesEnum.calculate(extremes);
+		return score;
 	}
 }
