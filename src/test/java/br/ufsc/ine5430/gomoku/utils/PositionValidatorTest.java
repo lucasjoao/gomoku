@@ -17,14 +17,14 @@ public class PositionValidatorTest {
 	@Test
 	public void verificaSePassarValorZeroRetornaFalso() {
 		FormError check = PositionValidator.check(new GuiGomoku().getTabuleiro(), 0);
-		assertEquals(check.getErrors().get(0), VALOR_INVALIDO);
+		assertEquals(VALOR_INVALIDO, check.getErrors().get(0));
 
 	}
 
 	@Test
 	public void verificaSePassarValor256RetornaFalso() {
 		FormError check = PositionValidator.check(new GuiGomoku().getTabuleiro(), 226);
-		assertEquals(check.getErrors().get(0), VALOR_INVALIDO);
+		assertEquals(VALOR_INVALIDO, check.getErrors().get(0));
 	}
 
 	@Test
@@ -53,7 +53,37 @@ public class PositionValidatorTest {
 		Map<Integer, String> tabuleiro = new GuiGomoku().getTabuleiro();
 		tabuleiro.put(1, "x");
 		FormError check = PositionValidator.check(tabuleiro, 1);
-		assertEquals(check.getErrors().get(0), CASA_OCUPADA);
+		assertEquals(CASA_OCUPADA, check.getErrors().get(0));
 	}
-
+	
+	@Test
+	public void checaRetornoDoCheckInputLevandoUmaLetra() {
+		int menorInteiro = PositionValidator.checkInput("S");
+		assertEquals(Integer.MIN_VALUE, menorInteiro);
+	}
+	
+	@Test public void checaRetornoDoCheckInputLevandoUmValorValido() {
+		int valor1Valido = PositionValidator.checkInput("1");
+		assertEquals(1, valor1Valido);
+	}
+	
+	@Test public void checaRetornoDoCheckInputLevandoUmValorInvalidoNegativo() {
+		int valorInvalidoNegativo = PositionValidator.checkInput("-1");
+		assertEquals(Integer.MIN_VALUE, valorInvalidoNegativo);
+	}
+	
+	@Test public void checaRetornoDoCheckInputLevandoUmValorInvalidoZerado() {
+		int valorInvalidoZerado = PositionValidator.checkInput("0");
+		assertEquals(Integer.MIN_VALUE, valorInvalidoZerado);
+	}
+	
+	@Test public void checaRetornoDoCheckInputLevandoUmValorInvalidoAcimaDe15() {
+		int valorInvalido16 = PositionValidator.checkInput("16");
+		assertEquals(Integer.MIN_VALUE, valorInvalido16);
+	}
+	
+	@Test public void checaRetornoDoCheckInputLevandoUmValorValidoLimiteSuperior() {
+		int valorValido15 = PositionValidator.checkInput("15");
+		assertEquals(15, valorValido15);
+	}
 }
