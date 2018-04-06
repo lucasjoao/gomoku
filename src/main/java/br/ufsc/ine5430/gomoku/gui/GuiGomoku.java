@@ -8,17 +8,24 @@ import javax.swing.JOptionPane;
 import lombok.Getter;
 import lombok.Setter;
 
+import br.ufsc.ine5430.gomoku.model.Position;
 import br.ufsc.ine5430.gomoku.utils.PositionValidator;
 
 
 /**
  * Classe que compõe toda a interface (via linha de comando) do jogo Gomoku
  */
-
 @Getter
 @Setter
 public class GuiGomoku {
 
+	/**
+	 * Map que tem como chave um inteiro (número da posição) e como valor uma string que irá conter a representação gráfica para o usuário da posição.
+	 * Representa os 225 lugares do tabuleiro 15 x 15 do Gomoku
+	 *
+	 * @see Map
+	 * @see Position
+	 */
 	private Map<Integer, String> tabuleiro = new HashMap<Integer, String>();
 
 	/**
