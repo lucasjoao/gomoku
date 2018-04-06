@@ -11,14 +11,46 @@ import br.ufsc.ine5430.gomoku.model.State;
 import br.ufsc.ine5430.gomoku.utils.GomokuUtils;
 import br.ufsc.ine5430.gomoku.utils.PositionValidator;
 
+/**
+ * Classe que possui a inteligência artificial utilizada no Gomoku
+ */
 public class MiniMax {
 
+	/**
+	 * Estado em que se encontra o tabuleiro ao executar a inteligência artificial
+	 *
+	 * @see State
+	 */
 	private State state;
+	/**
+	 * Jogador que possui a vez de jogar
+	 *
+	 * @see PlayersEnum
+	 */
 	private PlayersEnum turnOf;
+	/**
+	 * Jogador que está no aguardo da jogada
+	 *
+	 * @see PlayersEnum
+	 */
 	private PlayersEnum otherPlayer;
+	/**
+	 * Inteiro que conta a quantidade de iterações necessárias para determinar a
+	 * próxima jogada pela inteligência artifical
+	 */
 	@Getter
 	private int loopCounter;
 
+	/**
+	 * Construtor que inicia a inteligência artificial a partir de um estado e
+	 * de qual jogador tem a vez na rodada. Com essas informações é determinado o
+	 * jogador que está no aguardo da jogada.
+	 *
+	 * @param state o estado atual do tabuleiro
+	 * @param turnOf o jogador que tem a vez na rodada
+	 * @see State
+	 * @see PlayersEnum
+	 */
 	public MiniMax(State state, PlayersEnum turnOf) {
 		this.state = state;
 		this.turnOf = turnOf;
@@ -26,13 +58,34 @@ public class MiniMax {
 		this.loopCounter = 0;
 	}
 
-	// XXX: documentar, return int[2] of {row, col}
+	/**
+	 * Determina o próximo movimento, provavelmente o melhor, para o computador
+	 * com uma profundidade de 4 no algoritmo do miniMax
+	 *
+	 * @return array de inteiros que representa as coordenadas, linha e coluna
+	 * (nessa ordem) do melhor movimento para a inteligência artificial
+	 * @see MiniMax#algorithm(int, PlayersEnum, int, int)
+	 */
 	public int[] move() {
 		int[] result = this.algorithm(4, this.turnOf, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return new int[] {result[1], result[2]};
 	}
 
-	// XXX documentar, return int[3] of {score, row, col}
+	/**
+	 * Implementação recursiva do algoritmo miniMax baseada a partir da fonte https://goo.gl/XCLMg1
+	 * com podas alpha e beta
+	 *
+	 * @param depth o inteiro que representa a profundidade que o algoritmo é executado
+	 * @param player o que possui a vez na rodada
+	 * @param alpha o inteiro associado ao jogador pc que é utilizado na poda
+	 * @param beta o inteiro associado ao jogador humano que é utilizado na poda
+	 * @return array de inteiros que representa a pontuação e as coordenadas,
+	 * linha e coluna, (os três nessa ordem) do melhor movimento
+	 * @see List
+	 * @see PlayersEnum
+	 * @see MiniMax#generateNextMoves()
+	 * @see GomokuUtils#posInMap(int, int)
+	 */
 	private int[] algorithm(int depth, PlayersEnum player, int alpha, int beta) {
 		List<int[]> nextMoves = this.generateNextMoves();
 
@@ -85,7 +138,21 @@ public class MiniMax {
 		return new int[] {(player == PlayersEnum.PC) ? alpha : beta, bestRow, bestCol};
 	}
 
-	// XXX documentar, return nextMoves in a list of int[2] of {row, col}
+	/**
+	 * Determina as possíveis próximas jogadas que o computador pode realizar.
+	 * Se no atual estado do tabuleiro houver algum vencedor, o resultado será uma lista de coordenadas vazias,
+	 * já que não há mais jogadas possíveis. Por uma questão de desempenho, optou-se por considerar como possíveis jogadas
+	 * para o computador somente as posições não ocupadas que estão em uma região de aproximadamente
+	 * 10 x 5 ao redor da última posição preenchida no tabuleiro
+	 *
+	 * @return uma lista de coordenadas (array de inteiros de tamanho 2, onde o primeiro elemento é a row, e,
+	 * o segundo é a coluna) com as próximas possíveis jogadas para o computador
+	 * @see MiniMax#hasWon(PlayersEnum)
+	 * @see List
+	 * @see ArrayList
+	 * @see GomokuUtils#posInMap(int, int)
+	 * @see PositionValidator#check(int)
+	 */
 	private List<int[]> generateNextMoves() {
 		List<int[]> nextMoves = new ArrayList<>();
 
@@ -107,6 +174,13 @@ public class MiniMax {
 		return nextMoves;
 	}
 
+	/**
+	 * Determina a nota a partir da aplicação de uma heurística na "estrela" que possui como centro o último movimento no tabuleiro 
+	 *
+	 * @return inteiro que representa a nota
+	 * @see MiniMax#evaluateDiagonal(boolean)
+	 * @see MiniMax#evaluateLine(boolean)
+	 */
 	private int evaluate() {
 		int score = 0;
 		score += this.evaluateLine(false);
@@ -116,7 +190,17 @@ public class MiniMax {
 		return score;
 	}
 
-	// XXX: documentar essa suruba
+	/**
+	 * Determina a nota da sequência que uma linha de 9 peças têm, onde o centro dessa linha é a última peça movimentada no tabuleiro
+	 *
+	 * @param isVertical booleano que determina se a linha que será verificada é horizontal ou vertical  
+	 * @return um inteiro que diz qual a nota da sequência encontrada na linha
+	 * @see List
+	 * @see ArrayList
+	 * @see PositionValidator#check(int)
+	 * @see GomokuUtils#posInMap(int, int)
+	 * @see MiniMax#calculate(int, List)
+	 */
 	private int evaluateLine(boolean isVertical) {
 		int sequence = 0;
 		boolean enemyFound = false;
@@ -205,6 +289,17 @@ public class MiniMax {
 		return this.calculate(sequence, extremes);
 	}
 
+	/**
+	 * Determina a nota da sequência que uma diagonal de 9 peças tem, onde o centro dessa diagonal é a última peça movimentada no tabuleiro  
+	 *
+	 * @param isLeftToRight booleano que determina se a linha diagonal que será verifica irá começar da esquerda para direita ou da direita para esquerda
+	 * @return um inteiro que diz qual a nota da sequência encontrada na linha
+	 * @see List
+	 * @see ArrayList
+	 * @see PositionValidator#check(int)
+	 * @see GomokuUtils#posInMap(int, int)
+	 * @see MiniMax#calculate(int, List)
+	 */
 	private int evaluateDiagonal(boolean isLeftToRight) {
 		int sequence = 0;
 		boolean enemyFound = false;
@@ -296,24 +391,27 @@ public class MiniMax {
 		return this.calculate(sequence, extremes);
 	}
 
+	/**
+	 * Faz uma busca em estrela a partir do último movimento para verificar se o jogador venceu ou não a partida
+	 *
+	 * @param player que será verificado se venceu o jogo
+	 * @return booleano que representa se houver um vencedor no jogo
+	 * @see MiniMax#checkLine(boolean, PlayersEnum)
+	 * @see MiniMax#checkDiagonal(boolean, PlayersEnum)
+	 */
 	public boolean hasWon(PlayersEnum player) {
-		if (this.checkLine(false, player)) {
-			// check horizontal line
-			return true;
-		} else if (this.checkLine(true, player)) {
-			// check vertical line
-			return true;
-		} else if (this.checkDiagonal(true, player)) {
-			// check diagonal from upper-left corner to lower-right corner
-			return true;
-		} else if (this.checkDiagonal(false, player)) {
-			// check diagonal from upper-right corner to lower-left corner
-			return true;
-		} else {
-			return false;
-		}
+		return this.checkLine(false, player) || this.checkLine(true, player) || this.checkDiagonal(true, player) || this.checkDiagonal(false, player);
 	}
 
+	/**
+	 * Verifica se há uma sequência vencedora na linha
+	 *
+	 * @param isVertical booleano que determina se a linha que será verificada é horizontal ou vertical
+	 * @param player que será verificado se venceu o jogo
+	 * @return booleano que indica se há uma sequência vencedora na linha
+	 * @see GomokuUtils#posInMap(int, int)
+	 * @see PositionValidator#check(int, int)
+	 */
 	private boolean checkLine(boolean isVertical, PlayersEnum player) {
 		int sequence = 0;
 		int index = isVertical ? 0 : 1;
@@ -335,6 +433,15 @@ public class MiniMax {
 		return false;
 	}
 
+	/**
+	 * Verifica se há uma sequência vencedora na diagonal
+	 *
+	 * @param isLeftToRight booleano que determina se a linha diagonal que será verifica irá começar da esquerda para direita ou da direita para esquerda
+	 * @param player que será verificado se venceu o jogo
+	 * @return booleano que indica se há uma sequência vencedora na diagonal
+	 * @see GomokuUtils#posInMap(int, int)
+	 * @see PositionValidator#check(int, int)
+	 */
 	private boolean checkDiagonal(boolean isLeftToRight, PlayersEnum player) {
 		int sequence = 0;
 		int colLastMove = this.state.getLastMove()[1];
@@ -358,6 +465,15 @@ public class MiniMax {
 		return false;
 	}
 
+	/**
+	 * A partir de um número que representa a sequência e seus extremos, se houver, aplica a heurística e calcula a sua nota
+	 *
+	 * @param sequence inteiro que representa a quantidade de peças na sequência
+	 * @param extremes lista de inteiros que possui as coordenadas dos extremos da sequência. Pode ser uma lista vazia, unitária ou possuir dois itens.
+	 * @return inteiro que é a nota dada para a sequência
+	 * @see RegionGradesEnum#calculate(List)
+	 * @see SequenceGradesEnum#calculate(int)
+	 */
 	private int calculate(int sequence, List<int[]> extremes) {
 		int score = SequenceGradesEnum.calculate(sequence);
 		score += RegionGradesEnum.calculate(extremes);
