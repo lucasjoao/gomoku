@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.ufsc.ine5430.gomoku.model.PlayersEnum;
@@ -50,7 +49,6 @@ public class MiniMaxTest {
 		assertFalse(miniMax.hasWon(PlayersEnum.HUMAN));
 	}
 
-	@Ignore
 	@Test
 	public void verificaSeDadoStateVitoriaEhDaMaquinaPC() {
 		Map<Integer, Position> board = new HashMap<>();
@@ -59,6 +57,7 @@ public class MiniMaxTest {
 		}
 
 		State stateVitoriaPc = new State();
+		stateVitoriaPc.setLastMove(new int[] {1, 2});
 		stateVitoriaPc.setBoard(board);
 		MiniMax miniMax = new MiniMax(stateVitoriaPc, PlayersEnum.PC);
 		assertTrue(miniMax.hasWon(PlayersEnum.PC));
